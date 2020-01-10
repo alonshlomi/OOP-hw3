@@ -60,4 +60,12 @@ public class Edge implements edge_data, Serializable {
 	public String toString() {
 		return "[" + src.getKey() + "->" + dest.getKey() + " (" + weight + ")]";
 	}
+
+	//JSON. Boaz's code:
+	public String toJSON() {
+		String ans = "";
+		ans = ans + "{src:" + this.getSrc() + ",dest:" + this.getDest() + ",weight:" + this.getWeight() + "}";
+		return ans;
+	}
+	//
 }

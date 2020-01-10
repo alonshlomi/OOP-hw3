@@ -59,7 +59,7 @@ public class Graph_GUI extends JFrame implements MouseListener {
 	//Methods:
 	private void initGUI() {
 		//Initialize a 1000x800 window:
-		int width = 1000, height = 800;
+		int width = 800, height = 800;
 		this.setRandLocations(width, height);
 		this.setTitle("Graph GUI");
 		this.setBounds(200, 0, width, height);
@@ -471,9 +471,10 @@ public class Graph_GUI extends JFrame implements MouseListener {
 		}
 	}
 
+	
 	public void paint(Graphics g) {
 		super.paint(g);
-
+		
 		Graphics2D g1 = (Graphics2D) g;
 
 		for (node_data node : this.g.getV()) {
@@ -519,6 +520,7 @@ public class Graph_GUI extends JFrame implements MouseListener {
 
 	}
 
+	
 	private void setRandLocations(int height, int width) {
 		/*
 		 * Set random location on a height x width window.

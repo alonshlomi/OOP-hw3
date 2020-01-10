@@ -31,6 +31,16 @@ public class Node implements node_data, Serializable {
 		tag = other.getTag();
 	}
 	
+	//Boaz's code:
+	public Node(int key, Point3D p) {
+		this.key = key;
+		setWeight(Double.POSITIVE_INFINITY);
+		setTag(-1);
+		setInfo(null);
+		setLocation(p);
+	}
+	//
+
 	//Methods, Getters and Setters:
 	@Override
 	public boolean equals(Object o) {
@@ -97,4 +107,11 @@ public class Node implements node_data, Serializable {
 		tag = t;
 	}
 
+	//JSON. Boaz's code:
+	public String toJSON() {
+		String ans = "";
+		ans = ans + "{id:" + this.getKey() + ",info:" + this.getInfo() + "}";
+		return ans;
+	}
+	//
 }

@@ -1,68 +1,71 @@
 package gameClient;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Menu;
-import java.awt.MenuBar;
-import java.awt.MenuItem;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import Server.*;
 import Server.game_service;
 import dataStructure.*;
-import gui.Graph_GUI;
 import utils.Point3D;
 
 public class MyGameGUI extends JFrame {
 
-	private graph game_graph;
-	private ArrayList<Fruit> fruits;
-	
+	private static final int WIDTH = 1200;
+	private static final int HEIGHT = 800;
+
+	private MyGame game;
+	private int game_mc;
 	
 	public MyGameGUI(int num) {
-		fruits = new ArrayList<Fruit>();
-		game_service game = Game_Server.getServer(num);
-		game_graph = new DGraph(game.getGraph());
-		
-		for (String f_string : game.getFruits()) {
-
-			Fruit fruit = new Fruit(f_string);
-			fruits.add(fruit);
-
-		}
-		
+		game = new MyGame(num,true);
+		game_mc = game.getMC();	
+		game.startAutoGame();
 		initGUI();
+		
 	}
-	
+
 	private void initGUI() {
-		//Initialize a 1000x800 window:
-		int width = 1200, height = 820;
-		this.scaleLocations(height, width);
-	//	this.scaleFruitsLocations(height, width);
 		this.setTitle("Graph GUI");
-		this.setBounds(200, 0, width, height);
+		this.setBounds(200, 0, WIDTH, HEIGHT);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//
-
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true) {
+					if(game_mc != game.getMC()) {
+						game_mc = game.getMC();
+						repaint();
+					}
+				}
+				
+			}
+		});
+		
+		t.start();
+		
 		this.setVisible(true);
+
 	}
-	
+
 	public void paint(Graphics g) {
 		super.paint(g);
-		
-		Graphics2D g1 = (Graphics2D) g;
+		scaleLocations(HEIGHT, WIDTH);
+		paintGraph(g);
 
-		for (node_data node : game_graph.getV()) {
+		paintFruits(g);
+
+		paintRobots(g);
+	}
+
+	private void paintGraph(Graphics g) {
+		for (node_data node : game.getGraph().getV()) {
 
 			g.setColor(Color.BLUE);
 			g.fillOval(node.getLocation().ix() - 5, node.getLocation().iy() - 5, 10, 10);
@@ -71,22 +74,21 @@ public class MyGameGUI extends JFrame {
 			g.setFont(new Font("Arial", Font.BOLD, 15));
 			g.drawString(node.getKey() + "", node.getLocation().ix() + 5, node.getLocation().iy() + 5);
 
-			if (game_graph.getE(node.getKey()) != null) {
-				for (edge_data edge : game_graph.getE(node.getKey())) {
+			if (game.getGraph().getE(node.getKey()) != null) {
+				for (edge_data edge : game.getGraph().getE(node.getKey())) {
 
-					node_data src = game_graph.getNode(edge.getSrc());
-					node_data dest = game_graph.getNode(edge.getDest());
+					node_data src = game.getGraph().getNode(edge.getSrc());
+					node_data dest = game.getGraph().getNode(edge.getDest());
 
 					g.setColor(Color.RED);
 
-				//	g1.setStroke(new BasicStroke(2));
-					g1.drawLine(src.getLocation().ix(), src.getLocation().iy(), dest.getLocation().ix(),
+					g.drawLine(src.getLocation().ix(), src.getLocation().iy(), dest.getLocation().ix(),
 							dest.getLocation().iy());
 
 					int mid_x = (src.getLocation().ix() + dest.getLocation().ix()) / 2;
 					int mid_y = (src.getLocation().iy() + dest.getLocation().iy()) / 2;
 					g.setFont(new Font("Arial", Font.BOLD, 12));
-				//	g.drawString(edge.getWeight() + "", mid_x, mid_y);
+					// g.drawString(edge.getWeight() + "", mid_x, mid_y);
 
 					g.setColor(Color.YELLOW);
 
@@ -102,47 +104,66 @@ public class MyGameGUI extends JFrame {
 			}
 
 		}
-		
-		for (Fruit fruit : fruits) {
+	}
+
+	private void paintFruits(Graphics g) {
+		for (Fruit fruit : game.getFruits()) {
 			g.setColor(Color.ORANGE);
 			if (fruit.getType() == 1) {
 				g.setColor(Color.GREEN);
 			}
-			g.fillOval(fruit.getLocation().ix()-7, fruit.getLocation().iy()-7, 15, 15);
+			g.fillOval(fruit.getLocation().ix() - 7, fruit.getLocation().iy() - 7, 15, 15);
+			g.setColor(Color.BLACK);
+			g.drawString(fruit.getValue() + "", fruit.getLocation().ix() + 10, fruit.getLocation().iy() + 10);
 		}
+	}
 
+	private void paintRobots(Graphics g) {
+		for (Robot robot : game.getRobots()) {
+			g.setColor(Color.GRAY);
+			g.drawOval(robot.getLocation().ix() - 15, robot.getLocation().iy() - 15, 30, 30);
+			g.setFont(new Font("Arial", Font.BOLD, 15));
+			g.drawString(robot.getID()+"", robot.getLocation().ix()-5, robot.getLocation().iy()+5);
+		}
 	}
 	
-	private void scaleLocations(int height, int width) {
+	// Scale function:
+	public void scaleLocations(int height, int width) {
 		double max_x = Double.MIN_VALUE;
 		double min_x = Double.MAX_VALUE;
 		double max_y = Double.MIN_VALUE;
 		double min_y = Double.MAX_VALUE;
-		
-		
-		for (node_data node : game_graph.getV()) {
+
+		for (node_data node : game.getGraph().getV()) {
 			max_x = Math.max(max_x, node.getLocation().x());
 			max_y = Math.max(max_y, node.getLocation().y());
 			min_x = Math.min(min_x, node.getLocation().x());
 			min_y = Math.min(min_y, node.getLocation().y());
 		}
-		
-		//Scale nodes locations
-		for (node_data node : game_graph.getV()) {
-			double new_x = scale(node.getLocation().x(), min_x, max_x, 50, width-50);
-			double new_y = scale(node.getLocation().y(), min_y, max_y, 70, height-70);
+
+		// Scale nodes locations
+		for (node_data node : game.getGraph().getV()) {
+			double new_x = scale(node.getLocation().x(), min_x, max_x, 50, width - 50);
+			double new_y = scale(node.getLocation().y(), min_y, max_y, 70, height - 70);
 			node.setLocation(new Point3D(new_x, new_y));
 		}
-		
-		//Scale fruits locations
-		for (Fruit fruit : fruits) {
-			double new_x = scale(fruit.getLocation().x(), min_x, max_x, 50, width-50);
-			double new_y = scale(fruit.getLocation().y(), min_y, max_y, 70, height-70);
+
+		// Scale fruits locations
+		for (Fruit fruit : game.getFruits()) {
+			double new_x = scale(fruit.getLocation().x(), min_x, max_x, 50, width - 50);
+			double new_y = scale(fruit.getLocation().y(), min_y, max_y, 70, height - 70);
 			fruit.setLocation(new Point3D(new_x, new_y));
 		}
+		
+		//Scale Robots location
+		for (Robot robot : game.getRobots()) {
+			double new_x = scale(robot.getLocation().x(), min_x, max_x, 50, width - 50);
+			double new_y = scale(robot.getLocation().y(), min_y, max_y, 70, height - 70);
+			robot.setLocation(new Point3D(new_x, new_y));
+		}
+		
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param data  denote some data to be scaled
@@ -157,15 +178,21 @@ public class MyGameGUI extends JFrame {
 		double res = ((data - r_min) / (r_max - r_min)) * (t_max - t_min) + t_min;
 		return res;
 	}
-	
+	//
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		MyGameGUI mg = new MyGameGUI(5);
+		MyGameGUI mg = new MyGameGUI(2);
+//		try {
+//			Thread.sleep(500);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
-		for(int i = 0 ; i < mg.fruits.size() ; i ++)
-		{
-			System.out.println(mg.fruits.get(i));
-		}
+
+		
+		
 	}
 
 }

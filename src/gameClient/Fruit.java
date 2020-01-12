@@ -5,10 +5,14 @@ import org.json.JSONObject;
 import utils.Point3D;
 
 public class Fruit {
-
+	
+	private Point3D original_pos;
 	private Point3D _pos;
 	private double _value;
 	private int _type;
+	private edge_data _edge;
+	
+	public static final Fruit_Comparator _Comp = new Fruit_Comparator();
 	
 	public Fruit() {
 	}
@@ -52,7 +56,15 @@ public class Fruit {
 	}
 
 	public void setLocation(Point3D p) {
+		this.original_pos = this._pos;
 		this._pos = (p != null) ? new Point3D(p) : null;
 	}
 	
+	public void setEdge(edge_data e) {
+		_edge = e;
+	}
+	
+	public edge_data getEdge() {
+		return _edge;
+	}
 }

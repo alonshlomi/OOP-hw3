@@ -47,7 +47,7 @@ public class Fruit {
 	public String toJSON() {
 
 		String ans = "{\"Fruit\":{\"value\":" + this._value + "," + "\"type\":" + this._type + "," + "\"pos\":\""
-				+ this._pos.toString() + "\"" + "}" + "}";
+				+ this._pos.toString() + "\"" + "}"  + "}";
 		return ans;
 	}
 

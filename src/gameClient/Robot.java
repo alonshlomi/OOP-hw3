@@ -58,4 +58,11 @@ public class Robot {
 	public String toString() {
 		return "id:"+_id+", src: "+_src+", dest: "+_dest+",pos: "+_pos;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Robot)) return false;
+		Robot other = (Robot) obj;
+		return this.getID() == other.getID();
+	}
 }

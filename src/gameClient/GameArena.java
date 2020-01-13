@@ -1,6 +1,7 @@
 package gameClient;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,9 +17,8 @@ public class GameArena {
 	private graph game_graph;
 	private ArrayList<Fruit> fruits;
 	private ArrayList<Robot> robots;
-		
-	
-	private double maxX,minX,maxY,minY;
+
+	private double maxX, minX, maxY, minY;
 
 	public static final Fruit_Comparator _Comp = new Fruit_Comparator();
 
@@ -32,26 +32,42 @@ public class GameArena {
 		setRobotsPositions();
 		initRobots();
 	}
-	
+
 	private void initFruits() {
-		fruits.clear();
-		for (String fruit_str : game.getFruits()) {
-			Fruit fruit = new Fruit(fruit_str);
-			setEdgeToFruits(fruit);
-			fruits.add(fruit);
-		}	
-		fruits.sort(_Comp);
+		synchronized (fruits) {
+
+			fruits.clear();
+			Iterator<String> it = game.getFruits().iterator();
+
+			while (it.hasNext()) {
+				String fruit_str = it.next();
+
+//			for (String fruit_str : game.getFruits()) {
+				Fruit fruit = new Fruit(fruit_str);
+				setEdgeToFruits(fruit);
+				fruits.add(fruit);
+				// }
+
+			}
+			fruits.sort(_Comp);
+		}
 	}
-	
+
 	private void initRobots() {
-		robots.clear();
-		for (String robot_str : game.getRobots()) {
-			Robot robot = new Robot(robot_str);
-			robots.add(robot);
-		}	
+		synchronized (robots) {
+			robots.clear();
+
+			Iterator<String> it = game.getRobots().iterator();
+			while (it.hasNext()) {
+				String robot_str = it.next();
+//			for (String robot_str : game.getRobots()) {
+				Robot robot = new Robot(robot_str);
+				robots.add(robot);
+				// }
+			}
+		}
 	}
-	
-	
+
 	private void setEdgeToFruits(Fruit fruit) {
 		for (node_data node : this.game_graph.getV()) {
 			for (edge_data edge : this.game_graph.getE(node.getKey())) {
@@ -74,7 +90,7 @@ public class GameArena {
 			}
 		}
 	}
-	
+
 	private int robotsNum() {
 		String game_str = game.toString();
 		int robots_num = 0;
@@ -87,38 +103,38 @@ public class GameArena {
 		}
 		return robots_num;
 	}
-	
+
 	private void setRobotsPositions() {
 		fruits.sort(_Comp);
 		int robots_num = robotsNum();
-		
-		for(int i = 0 ; i<robots_num;i++) {
+
+		for (int i = 0; i < robots_num; i++) {
 			int src_node = fruits.get(i).getEdge().getSrc();
 			game.addRobot(src_node);
-		}	
+		}
 	}
-	
+
 	public void update() {
 		initFruits();
 		initRobots();
 	}
-	
+
 	public game_service getGame() {
 		return game;
 	}
-	
+
 	public ArrayList<Fruit> getFruits() {
 		return fruits;
 	}
-	
+
 	public ArrayList<Robot> getRobots() {
 		return robots;
 	}
-	
+
 	public graph getGraph() {
 		return game_graph;
 	}
-	
+
 	private void setScaleParameters() {
 		maxX = Double.MIN_VALUE;
 		minX = Double.MAX_VALUE;
@@ -132,27 +148,21 @@ public class GameArena {
 			minY = Math.min(minY, node.getLocation().y());
 		}
 	}
-	
+
 	public double maxX() {
 		return maxX;
 	}
-	
+
 	public double minX() {
 		return minX;
 	}
-	
+
 	public double maxY() {
 		return maxY;
 	}
-	
+
 	public double minY() {
 		return minY;
-	}
-	
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

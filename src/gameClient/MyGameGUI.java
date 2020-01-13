@@ -2,6 +2,7 @@ package gameClient;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,27 +11,32 @@ import java.awt.MenuBar;
 import java.awt.MenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import Server.*;
 import Server.game_service;
 import dataStructure.*;
 import utils.Point3D;
 
-public class MyGameGUI extends JFrame {
+public class MyGameGUI extends JFrame implements MouseListener {
 
 	private static final int WIDTH = 1200;
 	private static final int HEIGHT = 800;
 
 	private GameArena game;
 	private boolean auto;
-	
-	JLabel time_lbl;
-	
-	public MyGameGUI(GameArena arena,boolean b) {
+
+
+	public MyGameGUI(GameArena arena, boolean b) {
 		this.game = arena;
 		this.auto = b;
 		initGUI();
@@ -40,43 +46,44 @@ public class MyGameGUI extends JFrame {
 		this.setTitle("Graph GUI");
 		this.setBounds(200, 0, WIDTH, HEIGHT);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		time_lbl = new JLabel("Time: " + game.getGame().timeToEnd() / 1000);
-		this.add(time_lbl,BorderLayout.NORTH);
+
 		this.setVisible(true);
+		this.addMouseListener(this);
 
 	}
 
-	public void setTime() {
-		time_lbl.setText("Time: " + game.getGame().timeToEnd() / 1000);
+	public void setTime(Graphics2D g) {
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Arial", Font.BOLD, 15));
+		g.drawString("Time: " + game.getGame().timeToEnd() / 1000,50,70);
 	}
-	
+
 	public void paint(Graphics g) {
-		super.paint(g);
-		setTime();
-		paintGraph(g);
+		BufferedImage bufferedImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = bufferedImage.createGraphics();
+		g2d.setBackground(new Color(240, 240, 240));
+		g2d.clearRect(0, 0, WIDTH, HEIGHT);
 
-		paintFruits(g);
-
-		paintRobots(g);
+		setTime(g2d);
+		paintFruits(g2d);
+		paintRobots(g2d);
+		paintGraph(g2d);
+		Graphics2D g2dComponent = (Graphics2D) g;
+		g2dComponent.drawImage(bufferedImage, null, 0, 0);
 	}
 
-	private void paintGraph(Graphics g) {
+	private void paintGraph(Graphics2D g) {
 		double minX = game.minX();
 		double minY = game.minY();
 		double maxX = game.maxX();
 		double maxY = game.maxY();
 		for (node_data node : game.getGraph().getV()) {
-			
-			int node_x = (int) scale(node.getLocation().x(), minX, maxX, 50, WIDTH-50);
-			int node_y = (int) scale(node.getLocation().y(), minY, maxY, 70, HEIGHT-70);
-			
+
+			int node_x = (int) scale(node.getLocation().x(), minX, maxX, 50, WIDTH - 50);
+			int node_y = (int) scale(node.getLocation().y(), minY, maxY, 200, HEIGHT - 200);
+
 			g.setColor(Color.BLUE);
 			g.fillOval(node_x - 5, node_y - 5, 10, 10);
-
-			g.setColor(Color.BLACK);
-			g.setFont(new Font("Arial", Font.BOLD, 15));
-			g.drawString(node.getKey() + "", node_x + 5, node_y + 5);
 
 			if (game.getGraph().getE(node.getKey()) != null) {
 				for (edge_data edge : game.getGraph().getE(node.getKey())) {
@@ -84,98 +91,84 @@ public class MyGameGUI extends JFrame {
 					node_data src = game.getGraph().getNode(edge.getSrc());
 					node_data dest = game.getGraph().getNode(edge.getDest());
 
-					int src_x = (int) scale(src.getLocation().x(), minX, maxX, 50, WIDTH-50);
-					int src_y = (int) scale(src.getLocation().y(), minY, maxY, 70, HEIGHT-70);
-					int dest_x = (int) scale(dest.getLocation().x(), minX, maxX, 50, WIDTH-50);
-					int dest_y = (int) scale(dest.getLocation().y(), minY, maxY, 70, HEIGHT-70);			
-					
+					int src_x = (int) scale(src.getLocation().x(), minX, maxX, 50, WIDTH - 50);
+					int src_y = (int) scale(src.getLocation().y(), minY, maxY, 200, HEIGHT - 200);
+					int dest_x = (int) scale(dest.getLocation().x(), minX, maxX, 50, WIDTH - 50);
+					int dest_y = (int) scale(dest.getLocation().y(), minY, maxY, 200, HEIGHT - 200);
+
 					g.setColor(Color.RED);
 					g.drawLine(src_x, src_y, dest_x, dest_y);
 
 					g.setColor(Color.YELLOW);
-					int dir_x = (((((((src_x + dest_x) / 2) + dest_x) / 2) + dest_x) / 2) + dest_x) / 2;
-					int dir_y = (((((((src_y + dest_y) / 2) + dest_y) / 2) + dest_y) / 2) + dest_y) / 2;
+					int dir_x = (((((((src_x + dest_x) / 2) + dest_x) / 2) + dest_x) / 2));
+					int dir_y = (((((((src_y + dest_y) / 2) + dest_y) / 2) + dest_y) / 2));
 
-					g.fillOval(dir_x - 5, dir_y - 5, 10, 10);
+					g.drawOval(dir_x - 5, dir_y - 5, 10, 10);
 
 				}
 			}
-
-		}
-	}
-
-	private void paintFruits(Graphics g) {
-		double minX = game.minX();
-		double minY = game.minY();
-		double maxX = game.maxX();
-		double maxY = game.maxY();
-		for (Fruit fruit : game.getFruits()) {
-			g.setColor(Color.ORANGE);
-			if (fruit.getType() == 1) {
-				g.setColor(Color.GREEN);
-			}
-			int fruit_x = (int) scale(fruit.getLocation().x(), minX, maxX, 50, WIDTH-50);
-			int fruit_y = (int) scale(fruit.getLocation().y(), minY, maxY, 70, HEIGHT-70);
-			
-			g.fillOval(fruit_x - 7, fruit_y - 7, 15, 15);
 			g.setColor(Color.BLACK);
-			g.drawString(fruit.getValue() + "", fruit_x + 10, fruit_y + 10);
-		}
-	}
-
-	private void paintRobots(Graphics g) {
-		double minX = game.minX();
-		double minY = game.minY();
-		double maxX = game.maxX();
-		double maxY = game.maxY();
-		for (Robot robot : game.getRobots()) {
-			int robot_x = (int) scale(robot.getLocation().x(), minX, maxX, 50, WIDTH-50);
-			int robot_y = (int) scale(robot.getLocation().y(), minY, maxY, 70, HEIGHT-70);
-			
-			
-			g.setColor(Color.GRAY);
-			g.drawOval(robot_x - 15, robot_y - 15, 30, 30);
 			g.setFont(new Font("Arial", Font.BOLD, 15));
-			g.drawString(robot.getID() + "", robot_x - 5, robot_y + 5);
+			g.drawString(node.getKey() + "", node_x + 5, node_y + 5);
+
+
 		}
 	}
 
-//	// Scale function:
-//	public void scaleLocations(int height, int width) {
-//		double max_x = Double.MIN_VALUE;
-//		double min_x = Double.MAX_VALUE;
-//		double max_y = Double.MIN_VALUE;
-//		double min_y = Double.MAX_VALUE;
-//
-//		for (node_data node : game.getGraph().getV()) {
-//			max_x = Math.max(max_x, node.getLocation().x());
-//			max_y = Math.max(max_y, node.getLocation().y());
-//			min_x = Math.min(min_x, node.getLocation().x());
-//			min_y = Math.min(min_y, node.getLocation().y());
-//		}
-//
-//		// Scale nodes locations
-//		for (node_data node : game.getGraph().getV()) {
-//			double new_x = scale(node.getLocation().x(), min_x, max_x, 50, width - 50);
-//			double new_y = scale(node.getLocation().y(), min_y, max_y, 70, height - 70);
-//			node.setLocation(new Point3D(new_x, new_y));
-//		}
-//
-//		// Scale fruits locations
-//		for (Fruit fruit : game.getFruits()) {
-//			double new_x = scale(fruit.getLocation().x(), min_x, max_x, 50, width - 50);
-//			double new_y = scale(fruit.getLocation().y(), min_y, max_y, 70, height - 70);
-//			fruit.setLocation(new Point3D(new_x, new_y));
-//		}
-//
-//		// Scale Robots location
-//		for (Robot robot : game.getRobots()) {
-//			double new_x = scale(robot.getLocation().x(), min_x, max_x, 50, width - 50);
-//			double new_y = scale(robot.getLocation().y(), min_y, max_y, 70, height - 70);
-//			robot.setLocation(new Point3D(new_x, new_y));
-//		}
-//
-//	}
+	private void paintFruits(Graphics2D g) {
+		synchronized (game.getFruits()) {
+
+			double minX = game.minX();
+			double minY = game.minY();
+			double maxX = game.maxX();
+			double maxY = game.maxY();
+//			Iterator<Fruit> it = game.getFruits().iterator();
+//			while (it.hasNext()) {
+//				Fruit fruit = it.next();
+			for (Fruit fruit : game.getFruits()) {
+				g.setColor(Color.ORANGE);
+				if (fruit.getType() == 1) {
+					g.setColor(Color.GREEN);
+				}
+				int fruit_x = (int) scale(fruit.getLocation().x(), minX, maxX, 50, WIDTH - 50);
+				int fruit_y = (int) scale(fruit.getLocation().y(), minY, maxY, 200, HEIGHT - 200);
+
+				g.fillOval(fruit_x - 7, fruit_y - 7, 15, 15);
+				g.setColor(Color.BLACK);
+				g.drawString(fruit.getValue() + "", fruit_x + 10, fruit_y + 10);
+				// }
+			}
+		}
+	}
+
+	private void paintRobots(Graphics2D g) {
+			double minX = game.minX();
+			double minY = game.minY();
+			double maxX = game.maxX();
+			double maxY = game.maxY();
+			
+			List<String> rob = game.getGame().getRobots();
+	        for (int i = 0; i < rob.size(); i++) {
+	            g.drawString(rob.get(i), WIDTH/5, 70 + (20 * i));
+	        }
+			synchronized (game.getRobots()) {
+
+//			Iterator<Robot> it = game.getRobots().iterator();
+//			while (it.hasNext()) {
+//				Robot robot = it.next();
+			for (Robot robot : game.getRobots()) {
+				int robot_x = (int) scale(robot.getLocation().x(), minX, maxX, 50, WIDTH - 50);
+				int robot_y = (int) scale(robot.getLocation().y(), minY, maxY, 200, HEIGHT - 200);
+
+				g.setColor(Color.GRAY);
+				g.drawOval(robot_x - 15, robot_y - 15, 30, 30);
+				g.setFont(new Font("Arial", Font.BOLD, 15));
+				g.drawString(robot.getID() + "", robot_x - 5, robot_y + 5);
+				// }
+			}
+		}
+	}
+
 
 	/**
 	 * 
@@ -193,8 +186,56 @@ public class MyGameGUI extends JFrame {
 	}
 	//
 
-	public static void main(String[] args) {
-		
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		System.out.println("aaa");
+		ArrayList<Robot> tmp = (ArrayList<Robot>) game.getRobots().clone();
+
+		synchronized (tmp) {
+
+			// Iterator<Robot> it = game.getRobots().iterator();
+
+			// while (it.hasNext()) {
+
+			for (Robot robot : tmp) {
+
+				// Robot robot = it.next();
+				if (robot.getDest() == -1) {
+					String dest_str = JOptionPane.showInputDialog("Enter next node for robot: " + robot.getID());
+					int dest = -1;
+					try {
+					dest = Integer.parseInt(dest_str);
+					}catch (Exception e1) {
+						JOptionPane.showMessageDialog(this, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					}
+					game.getGame().chooseNextEdge(robot.getID(), dest);
+				}
+			}
+			// }
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
 
 	}
 

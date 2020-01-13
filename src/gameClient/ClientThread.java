@@ -30,7 +30,7 @@ public class ClientThread extends Thread {
 		while(g.isRunning()) {
 			g.move();
 			try {
-				this.sleep(100);
+				this.sleep(200);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

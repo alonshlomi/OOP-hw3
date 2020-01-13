@@ -2,6 +2,7 @@ package gameClient;
 
 import org.json.JSONObject;
 
+import dataStructure.node_data;
 import utils.Point3D;
 
 public class Robot {
@@ -58,6 +59,7 @@ public class Robot {
 	public String toString() {
 		return "id:"+_id+", src: "+_src+", dest: "+_dest+",pos: "+_pos;
 	}
+	
 	
 	@Override
 	public boolean equals(Object obj) {

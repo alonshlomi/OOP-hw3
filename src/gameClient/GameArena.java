@@ -1,49 +1,56 @@
 package gameClient;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import Server.Game_Server;
 import Server.game_service;
-import dataStructure.DGraph;
-import dataStructure.edge_data;
-import dataStructure.graph;
-import dataStructure.node_data;
+import dataStructure.*;
 import utils.Point3D;
 
-public class MyGame {
-	
+public class GameArena {
+
 	private game_service game;
 	private graph game_graph;
 	private ArrayList<Fruit> fruits;
 	private ArrayList<Robot> robots;
-	private boolean auto_game;
-	private int mc;
-	
-	public static final Fruit_Comparator _Comp = new Fruit_Comparator();
+		
 	
 	private double maxX,minX,maxY,minY;
-	
-	public MyGame(int num,boolean auto) {
+
+	public static final Fruit_Comparator _Comp = new Fruit_Comparator();
+
+	public GameArena(int num) {
 		game = Game_Server.getServer(num);
 		game_graph = new DGraph(game.getGraph());
 		setScaleParameters();
 		fruits = new ArrayList<Fruit>();
 		robots = new ArrayList<Robot>();
-		auto_game = auto;
-		
 		initFruits();
-		
-		if(auto_game) {
-			setRobotsPositions();
-			initRobots();
-		}
-		
+		setRobotsPositions();
+		initRobots();
 	}
-	 
+	
+	private void initFruits() {
+		fruits.clear();
+		for (String fruit_str : game.getFruits()) {
+			Fruit fruit = new Fruit(fruit_str);
+			setEdgeToFruits(fruit);
+			fruits.add(fruit);
+		}	
+		fruits.sort(_Comp);
+	}
+	
+	private void initRobots() {
+		robots.clear();
+		for (String robot_str : game.getRobots()) {
+			Robot robot = new Robot(robot_str);
+			robots.add(robot);
+		}	
+	}
+	
 	
 	private void setEdgeToFruits(Fruit fruit) {
 		for (node_data node : this.game_graph.getV()) {
@@ -68,23 +75,6 @@ public class MyGame {
 		}
 	}
 	
-	private void initFruits() {
-		fruits.clear();
-		for (String fruit_str : game.getFruits()) {
-			Fruit fruit = new Fruit(fruit_str);
-			setEdgeToFruits(fruit);
-			fruits.add(fruit);
-		}	
-	}
-	
-	private void initRobots() {
-		robots.clear();
-		for (String robot_str : game.getRobots()) {
-			Robot robot = new Robot(robot_str);
-			robots.add(robot);
-		}	
-	}
-
 	private int robotsNum() {
 		String game_str = game.toString();
 		int robots_num = 0;
@@ -108,16 +98,25 @@ public class MyGame {
 		}	
 	}
 	
-	public graph getGraph() {
-		return game_graph;
+	public void update() {
+		initFruits();
+		initRobots();
 	}
 	
-	public List<Fruit> getFruits() {
+	public game_service getGame() {
+		return game;
+	}
+	
+	public ArrayList<Fruit> getFruits() {
 		return fruits;
 	}
 	
-	public List<Robot> getRobots() {
+	public ArrayList<Robot> getRobots() {
 		return robots;
+	}
+	
+	public graph getGraph() {
+		return game_graph;
 	}
 	
 	private void setScaleParameters() {
@@ -150,33 +149,10 @@ public class MyGame {
 		return minY;
 	}
 	
- 	public static void main(String[] args) throws InterruptedException {
-		MyGame g = new MyGame(2,true);
-		g.game.startGame();
-		System.out.println(g.game.isRunning());
-		System.out.println(g.robots.get(0));
-		g.game.chooseNextEdge(0, 3);
-	//	Thread.sleep(2000);
-		while(g.game.isRunning()) {
-			System.out.println(g.game.move());
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
 
-		Thread.sleep(2000);
-		//g.initRobots();
-		System.out.println(g.robots.get(0));
-		}
 	}
 
-
-	public void moveRobots() {
-		game.startGame();
-		game.chooseNextEdge(0, 3);
-		game.move();
-//		try {
-//			Thread.sleep(2000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		initRobots();
-	}
 }

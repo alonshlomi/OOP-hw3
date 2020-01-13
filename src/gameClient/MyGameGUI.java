@@ -1,5 +1,6 @@
 package gameClient;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -12,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import Server.*;
 import Server.game_service;
@@ -23,11 +25,14 @@ public class MyGameGUI extends JFrame {
 	private static final int WIDTH = 1200;
 	private static final int HEIGHT = 800;
 
-	private MyGame game;
-	private int game_mc;
-
-	public MyGameGUI(int num) {
-		game = new MyGame(num, true);
+	private GameArena game;
+	private boolean auto;
+	
+	JLabel time_lbl;
+	
+	public MyGameGUI(GameArena arena,boolean b) {
+		this.game = arena;
+		this.auto = b;
 		initGUI();
 	}
 
@@ -36,46 +41,19 @@ public class MyGameGUI extends JFrame {
 		this.setBounds(200, 0, WIDTH, HEIGHT);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		MenuBar menubar = new MenuBar();
-		Menu menu = new Menu("Move");
-		MenuItem item = new MenuItem("Move");
-		item.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				game.moveRobots();
-				repaint();
-			}
-		});
-		
-		menu.add(item);
-		
-		menubar.add(menu);
-		this.setMenuBar(menubar);
-		
-		Thread t = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				while(true) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					repaint();
-				}
-			}
-		});
-		t.start();
-		
+		time_lbl = new JLabel("Time: " + game.getGame().timeToEnd() / 1000);
+		this.add(time_lbl,BorderLayout.NORTH);
 		this.setVisible(true);
 
 	}
 
+	public void setTime() {
+		time_lbl.setText("Time: " + game.getGame().timeToEnd() / 1000);
+	}
+	
 	public void paint(Graphics g) {
 		super.paint(g);
+		setTime();
 		paintGraph(g);
 
 		paintFruits(g);
@@ -162,42 +140,42 @@ public class MyGameGUI extends JFrame {
 		}
 	}
 
-	// Scale function:
-	public void scaleLocations(int height, int width) {
-		double max_x = Double.MIN_VALUE;
-		double min_x = Double.MAX_VALUE;
-		double max_y = Double.MIN_VALUE;
-		double min_y = Double.MAX_VALUE;
-
-		for (node_data node : game.getGraph().getV()) {
-			max_x = Math.max(max_x, node.getLocation().x());
-			max_y = Math.max(max_y, node.getLocation().y());
-			min_x = Math.min(min_x, node.getLocation().x());
-			min_y = Math.min(min_y, node.getLocation().y());
-		}
-
-		// Scale nodes locations
-		for (node_data node : game.getGraph().getV()) {
-			double new_x = scale(node.getLocation().x(), min_x, max_x, 50, width - 50);
-			double new_y = scale(node.getLocation().y(), min_y, max_y, 70, height - 70);
-			node.setLocation(new Point3D(new_x, new_y));
-		}
-
-		// Scale fruits locations
-		for (Fruit fruit : game.getFruits()) {
-			double new_x = scale(fruit.getLocation().x(), min_x, max_x, 50, width - 50);
-			double new_y = scale(fruit.getLocation().y(), min_y, max_y, 70, height - 70);
-			fruit.setLocation(new Point3D(new_x, new_y));
-		}
-
-		// Scale Robots location
-		for (Robot robot : game.getRobots()) {
-			double new_x = scale(robot.getLocation().x(), min_x, max_x, 50, width - 50);
-			double new_y = scale(robot.getLocation().y(), min_y, max_y, 70, height - 70);
-			robot.setLocation(new Point3D(new_x, new_y));
-		}
-
-	}
+//	// Scale function:
+//	public void scaleLocations(int height, int width) {
+//		double max_x = Double.MIN_VALUE;
+//		double min_x = Double.MAX_VALUE;
+//		double max_y = Double.MIN_VALUE;
+//		double min_y = Double.MAX_VALUE;
+//
+//		for (node_data node : game.getGraph().getV()) {
+//			max_x = Math.max(max_x, node.getLocation().x());
+//			max_y = Math.max(max_y, node.getLocation().y());
+//			min_x = Math.min(min_x, node.getLocation().x());
+//			min_y = Math.min(min_y, node.getLocation().y());
+//		}
+//
+//		// Scale nodes locations
+//		for (node_data node : game.getGraph().getV()) {
+//			double new_x = scale(node.getLocation().x(), min_x, max_x, 50, width - 50);
+//			double new_y = scale(node.getLocation().y(), min_y, max_y, 70, height - 70);
+//			node.setLocation(new Point3D(new_x, new_y));
+//		}
+//
+//		// Scale fruits locations
+//		for (Fruit fruit : game.getFruits()) {
+//			double new_x = scale(fruit.getLocation().x(), min_x, max_x, 50, width - 50);
+//			double new_y = scale(fruit.getLocation().y(), min_y, max_y, 70, height - 70);
+//			fruit.setLocation(new Point3D(new_x, new_y));
+//		}
+//
+//		// Scale Robots location
+//		for (Robot robot : game.getRobots()) {
+//			double new_x = scale(robot.getLocation().x(), min_x, max_x, 50, width - 50);
+//			double new_y = scale(robot.getLocation().y(), min_y, max_y, 70, height - 70);
+//			robot.setLocation(new Point3D(new_x, new_y));
+//		}
+//
+//	}
 
 	/**
 	 * 
@@ -216,14 +194,7 @@ public class MyGameGUI extends JFrame {
 	//
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		MyGameGUI mg = new MyGameGUI(2);
-//		try {
-//			Thread.sleep(500);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		
 
 	}
 

@@ -37,12 +37,14 @@ public class GameArena {
 		synchronized (fruits) {
 
 			fruits.clear();
-			Iterator<String> it = game.getFruits().iterator();
+//			Iterator<String> it = game.getFruits().iterator();
+//
+//			while (it.hasNext()) {
+//
+//			String fruit_str = it.next();
 
-			while (it.hasNext()) {
-				String fruit_str = it.next();
+			for (String fruit_str : game.getFruits()) {
 
-//			for (String fruit_str : game.getFruits()) {
 				Fruit fruit = new Fruit(fruit_str);
 				setEdgeToFruits(fruit);
 				fruits.add(fruit);
@@ -57,10 +59,11 @@ public class GameArena {
 		synchronized (robots) {
 			robots.clear();
 
-			Iterator<String> it = game.getRobots().iterator();
-			while (it.hasNext()) {
-				String robot_str = it.next();
-//			for (String robot_str : game.getRobots()) {
+//			Iterator<String> it = game.getRobots().iterator();
+//			while (it.hasNext()) {
+//				String robot_str = it.next();
+			
+			for (String robot_str : game.getRobots()) {
 				Robot robot = new Robot(robot_str);
 				robots.add(robot);
 				// }
@@ -72,15 +75,15 @@ public class GameArena {
 		for (node_data node : this.game_graph.getV()) {
 			for (edge_data edge : this.game_graph.getE(node.getKey())) {
 				node_data dst = this.game_graph.getNode(edge.getDest());
-				double d1 = node.getLocation().distance3D(fruit.getLocation());
-				double d2 = fruit.getLocation().distance3D(dst.getLocation());
-				double dist = node.getLocation().distance3D(dst.getLocation());
+				double d1 = node.getLocation().distance2D(fruit.getLocation());
+				double d2 = fruit.getLocation().distance2D(dst.getLocation());
+				double dist = node.getLocation().distance2D(dst.getLocation());
 				double tmp = dist - (d1 + d2);
 				int t;
 				if (node.getKey() > dst.getKey()) {
-					t = 1;
-				} else {
 					t = -1;
+				} else {
+					t = 1;
 				}
 
 				if ((Math.abs(tmp) <= Point3D.EPS2) && (fruit.getType() == t)) {

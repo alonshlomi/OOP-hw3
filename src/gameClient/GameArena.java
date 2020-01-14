@@ -10,6 +10,7 @@ import Server.Game_Server;
 import Server.game_service;
 import dataStructure.*;
 import utils.Point3D;
+import utils.Range;
 
 public class GameArena {
 
@@ -62,7 +63,7 @@ public class GameArena {
 //			Iterator<String> it = game.getRobots().iterator();
 //			while (it.hasNext()) {
 //				String robot_str = it.next();
-			
+
 			for (String robot_str : game.getRobots()) {
 				Robot robot = new Robot(robot_str);
 				robots.add(robot);
@@ -108,7 +109,6 @@ public class GameArena {
 	}
 
 	private void setRobotsPositions() {
-		fruits.sort(_Comp);
 		int robots_num = robotsNum();
 
 		for (int i = 0; i < robots_num; i++) {
@@ -166,6 +166,26 @@ public class GameArena {
 
 	public double minY() {
 		return minY;
+	}
+
+	public int getRobotFromCoordinates(double original_x, double original_y) {
+		Point3D p = new Point3D(original_x, original_y);
+		ArrayList<Robot> tmp = (ArrayList<Robot>) robots.clone();
+		synchronized (tmp) {
+
+			for (Robot robot : tmp) {
+				if (robot.getDest() == -1) {
+					
+					double dist = robot.getLocation().distance2D(p);
+					if (dist <= 0.0003) {
+						return robot.getID();
+					}
+					
+				}
+			}
+
+		}
+		return -1;
 	}
 
 }

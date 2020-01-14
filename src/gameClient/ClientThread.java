@@ -105,8 +105,6 @@ public class ClientThread extends Thread {
 
 	public static void main(String[] args) {
 		init();
-		System.out.println(scenario);
-		System.out.println(auto_game);
 		ClientThread client = new ClientThread();
 		client.start();
 

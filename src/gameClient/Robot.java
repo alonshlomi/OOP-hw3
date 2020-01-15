@@ -67,4 +67,8 @@ public class Robot {
 		Robot other = (Robot) obj;
 		return this.getID() == other.getID();
 	}
+
+	public double getSpeed() {
+		return _speed;
+	}
 }

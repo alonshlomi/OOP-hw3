@@ -67,4 +67,12 @@ public class Fruit {
 	public edge_data getEdge() {
 		return _edge;
 	}
+
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Fruit)) return false;
+		Fruit other = (Fruit) obj;
+		return this._pos.equals(other.getLocation());
+	}
 }

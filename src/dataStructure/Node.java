@@ -58,7 +58,7 @@ public class Node implements node_data, Serializable {
 		String ans = "[" + key;
 //		ans+= "("+info+")";
 //		ans+= "{"+tag+"}";
-		ans += ", "+location;
+//		ans += ", "+location;
 		ans += "]";
 		return ans;
 	}

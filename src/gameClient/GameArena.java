@@ -45,16 +45,29 @@ public class GameArena {
 //			while (it.hasNext()) {
 //
 //			String fruit_str = it.next();
-
-			for (String fruit_str : game.getFruits()) {
-
-				Fruit fruit = new Fruit(fruit_str);
-				setEdgeToFruits(fruit);
-				fruits.add(fruit);
-				// }
-
+			if (fruits.isEmpty()) {
+				for (String fruit_str : game.getFruits()) {
+					Fruit fruit = new Fruit(fruit_str);
+					setEdgeToFruits(fruit);
+					fruits.add(fruit);
+					// }
+				}
+				fruits.sort(_Comp);
+//				return;
 			}
-			fruits.sort(_Comp);
+
+//			for(int i = 0 ; i < fruits.size(); i ++) {
+//				String curr_str = game.getFruits().get(i);
+//				Fruit curr = new Fruit(curr_str);
+//				Fruit origin = fruits.get(i);
+//				if(!origin.equals(curr)) {
+//					setEdgeToFruits(curr);
+//					fruits.remove(i);
+//					fruits.add(curr);
+//				}				
+//			}
+			// fruits.sort(_Comp);
+
 		}
 	}
 

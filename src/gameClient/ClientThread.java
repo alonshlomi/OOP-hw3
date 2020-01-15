@@ -1,5 +1,10 @@
 package gameClient;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -12,7 +17,8 @@ public class ClientThread extends Thread {
 
 	private MyGameGUI window;
 	private GameArena arena;
-
+	private KML_Logger kml;
+	
 	private static int scenario = 0;
 	private static boolean auto_game = true;
 
@@ -29,13 +35,20 @@ public class ClientThread extends Thread {
 			game_service g = arena.getGame();
 			g.startGame();
 			
+			kml = new KML_Logger(scenario);
+			
 			if (auto_game) {
 				Game_Algo autogame = new Game_Algo(arena);
 				autogame.start();
 			}
 			
+			int dt = 70;
 			while (g.isRunning()) {
-				Thread.sleep(150);
+				
+				if(g.timeToEnd() <= 25000) {
+					dt =50;
+				}
+				Thread.sleep(dt);
 				g.move();
 				arena.update();
 				window.repaint();
@@ -43,7 +56,8 @@ public class ClientThread extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
+		
+		kml.end();
 		double grade = getGrade();
 		int moves = getMoves();
 		JOptionPane.showMessageDialog(window, "Game Over!\nPoints earned: "+grade+" in "+moves+" moves.");
@@ -108,6 +122,7 @@ public class ClientThread extends Thread {
 		init();
 		ClientThread client = new ClientThread();
 		client.start();
+
 	}
 
 }

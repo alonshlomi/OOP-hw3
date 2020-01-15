@@ -6,7 +6,6 @@ import utils.Point3D;
 
 public class Fruit {
 	
-	private Point3D original_pos;
 	private Point3D _pos;
 	private double _value;
 	private int _type;
@@ -56,8 +55,7 @@ public class Fruit {
 	}
 
 	public void setLocation(Point3D p) {
-		this.original_pos = this._pos;
-		this._pos = (p != null) ? new Point3D(p) : null;
+		this._pos = p;
 	}
 	
 	public void setEdge(edge_data e) {

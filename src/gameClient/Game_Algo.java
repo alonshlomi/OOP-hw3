@@ -1,21 +1,15 @@
 package gameClient;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 
 import Server.game_service;
 import algorithms.Graph_Algo;
-import dataStructure.edge_data;
 import dataStructure.node_data;
-import oop_dataStructure.oop_edge_data;
 
 public class Game_Algo extends Thread {
 
 	private GameArena arena;
-	private boolean auto_game;
 	private Graph_Algo g_algo;
 	private Hashtable<Integer, List<node_data>> paths;
 
@@ -24,24 +18,16 @@ public class Game_Algo extends Thread {
 		game_service g = arena.getGame();
 		initPaths();
 		while (g.isRunning()) {
-//			try {
-//				Thread.sleep(50);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			ArrayList<Robot> tmp = (ArrayList<Robot>) arena.getRobots().clone();
-//			synchronized (tmp) {
 
 			for (int i = 0; i < arena.numOfRobots(); i++) {
 				Robot robot = arena.getRobots().get(i);
 				if (robot != null && robot.getDest() == -1) {
-					
+
 					int next = nextNode(i);
 					g.chooseNextEdge(i, next);
 				}
 			}
-//			}
+			
 		}
 	}
 
@@ -76,10 +62,6 @@ public class Game_Algo extends Thread {
 				}
 			}
 		}
-
-//        node_data n=robot_path.get(0);
-//        robot_path.remove(n);
-//        return n.getKey();
 
 		for (int i = 0; i < robot_path.size(); i++) {
 			node_data curr = robot_path.get(i);

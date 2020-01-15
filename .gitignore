@@ -1,3 +1,4 @@
 *.txt
 src/Main.java
+src/gameClient/SimpleGameClient.java
 /bin

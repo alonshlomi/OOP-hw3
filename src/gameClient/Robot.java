@@ -8,9 +8,9 @@ import utils.Point3D;
 public class Robot {
 	
 	private int _id;
-	private double _value,_speed;
+	private double _speed;
 	private int _src,_dest;
-	private Point3D original_pos,_pos;
+	private Point3D _pos;
 
 	public Robot() {
 	}
@@ -21,8 +21,6 @@ public class Robot {
 			JSONObject robot = new JSONObject(json).getJSONObject("Robot");
 			int id = robot.getInt("id");
 			this._id = id;
-			double val = robot.getDouble("value");
-			this._value = val;
 			int src = robot.getInt("src");
 			this._src = src;
 			int dest = robot.getInt("dest");
@@ -41,7 +39,6 @@ public class Robot {
 	}
 	
 	public void setLocation(Point3D p) {
-		this.original_pos = this._pos;
 		this._pos = new Point3D(p);
 	}
 	

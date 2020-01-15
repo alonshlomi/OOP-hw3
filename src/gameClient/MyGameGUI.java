@@ -7,16 +7,12 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import dataStructure.*;
-import utils.Point3D;
-import utils.Range;
 
 public class MyGameGUI extends JFrame implements MouseListener {
 
@@ -81,12 +77,6 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		double maxY = arena_maxY;
 		for (node_data node : arena.getGraph().getV()) {
 
-//			int node_x = (int) scale(node.getLocation().x(), minX, maxX, 50, WIDTH - 50);
-//			int node_y = (int) scale(node.getLocation().y(), minY, maxY, 200, HEIGHT - 200);
-//
-//			g.setColor(Color.BLUE);
-//			g.fillOval(node_x - 5, node_y - 5, 10, 10);
-
 			if (arena.getGraph().getE(node.getKey()) != null) {
 				for (edge_data edge : arena.getGraph().getE(node.getKey())) {
 
@@ -109,9 +99,6 @@ public class MyGameGUI extends JFrame implements MouseListener {
 
 				}
 			}
-//			g.setColor(Color.BLACK);
-//			g.setFont(new Font("Arial", Font.BOLD, 15));
-//			g.drawString(node.getKey() + "", node_x + 5, node_y + 5);
 
 		}
 		for (node_data node : arena.getGraph().getV()) {
@@ -134,9 +121,6 @@ public class MyGameGUI extends JFrame implements MouseListener {
 			double minY = arena_minY;
 			double maxX = arena_maxX;
 			double maxY = arena_maxY;
-//			Iterator<Fruit> it = game.getFruits().iterator();
-//			while (it.hasNext()) {
-//				Fruit fruit = it.next();
 			for (Fruit fruit : arena.getFruits()) {
 				g.setColor(Color.ORANGE);
 				if (fruit.getType() == 1) {
@@ -148,7 +132,6 @@ public class MyGameGUI extends JFrame implements MouseListener {
 				g.fillOval(fruit_x - 7, fruit_y - 7, 15, 15);
 				g.setColor(Color.BLACK);
 				g.drawString(fruit.getValue() + "", fruit_x + 10, fruit_y + 10);
-				// }
 			}
 		}
 	}
@@ -165,13 +148,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		for (int i = 0; i < rob.size(); i++) {
 			g.drawString(rob.get(i), WIDTH / 5, 70 + (20 * i));
 		}
-//		synchronized (arena.getRobots()) {
-
-//			Iterator<Robot> it = game.getRobots().iterator();
-//			while (it.hasNext()) {
-//				Robot robot = it.next();
-//			for (Robot robot : arena.getRobots()) {
-
+		
 		for (int i = 0; i < arena.numOfRobots(); i++) {
 			Robot robot = arena.getRobots().get(i);
 
@@ -182,8 +159,6 @@ public class MyGameGUI extends JFrame implements MouseListener {
 			g.drawOval(robot_x - 15, robot_y - 15, 30, 30);
 			g.setFont(new Font("Arial", Font.BOLD, 15));
 			g.drawString(robot.getID() + "", robot_x - 5, robot_y + 5);
-			// }
-//			}
 		}
 	}
 
@@ -236,27 +211,6 @@ public class MyGameGUI extends JFrame implements MouseListener {
 			arena.getGame().chooseNextEdge(rid, dest);
 		}
 
-//		ArrayList<Robot> tmp = (ArrayList<Robot>) arena.getRobots().clone();
-//
-//		synchronized (tmp) {
-//
-//			// Iterator<Robot> it = game.getRobots().iterator();
-//			// while (it.hasNext()) {
-//			// Robot robot = it.next();
-//			for (Robot robot : tmp) {
-//				if (robot.getDest() == -1) {
-//					String dest_str = JOptionPane.showInputDialog("Enter next node for robot: " + robot.getID());
-//					int dest = -1;
-//					try {
-//						dest = Integer.parseInt(dest_str);
-//					} catch (Exception e1) {
-//						JOptionPane.showMessageDialog(this, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-//					}
-//					arena.getGame().chooseNextEdge(robot.getID(), dest);
-//				}
-//			}
-//			// }
-//		}
 	}
 
 	@Override

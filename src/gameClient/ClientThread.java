@@ -12,12 +12,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import Server.game_service;
+import dataStructure.node_data;
 
 public class ClientThread extends Thread {
 
 	private MyGameGUI window;
 	private GameArena arena;
-	private KML_Logger kml;
+	static KML_Logger kml = null;
 	
 	private static int scenario = 0;
 	private static boolean auto_game = true;
@@ -33,9 +34,13 @@ public class ClientThread extends Thread {
 	public void run() {
 		try {
 			game_service g = arena.getGame();
-			g.startGame();
 			
+			//Initialize KML
 			kml = new KML_Logger(scenario);
+			addNodesToKML(); //Export graph nodes to KML
+			//
+			
+			g.startGame();
 			
 			if (auto_game) {
 				Game_Algo autogame = new Game_Algo(arena);
@@ -66,13 +71,19 @@ public class ClientThread extends Thread {
 		
 	}
 
+	private void addNodesToKML() {
+		for (node_data node : arena.getGraph().getV()) {
+			Date date = new Date();
+			kml.addPlacemark(date, node.getLocation(), "node");
+		}
+	}
+
 	private int getMoves() {
 		int moves = -1;
 		try {
 			JSONObject game_obj = new JSONObject(arena.getGame().toString()).getJSONObject("GameServer");
 			moves = game_obj.getInt("moves");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return moves;

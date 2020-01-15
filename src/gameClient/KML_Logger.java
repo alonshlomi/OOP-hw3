@@ -32,12 +32,12 @@ public class KML_Logger {
                         " <Style id=\"node\">\r\n" +
                         "      <IconStyle>\r\n" +
                         "        <Icon>\r\n" +
-                        "          <href>http://maps.google.com/mapfiles/kml/paddle/grn-blank.png</href>\r\n" +
+                        "          <href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\r\n" +
                         "        </Icon>\r\n" +
                         "        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n" +
                         "      </IconStyle>\r\n" +
                         "    </Style>" +
-                        " <Style id=\"fruit-banana\">\r\n" +
+                        " <Style id=\"banana\">\r\n" +
                         "      <IconStyle>\r\n" +
                         "        <Icon>\r\n" +
                         "          <href>http://maps.google.com/mapfiles/kml/pal5/icon57.png</href>\r\n" +
@@ -45,7 +45,7 @@ public class KML_Logger {
                         "        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n" +
                         "      </IconStyle>\r\n" +
                         "    </Style>" +
-                        " <Style id=\"fruit-apple\">\r\n" +
+                        " <Style id=\"apple\">\r\n" +
                         "      <IconStyle>\r\n" +
                         "        <Icon>\r\n" +
                         "          <href>http://maps.google.com/mapfiles/kml/pal5/icon56.png</href>\r\n" +
@@ -56,7 +56,7 @@ public class KML_Logger {
                         " <Style id=\"robot\">\r\n" +
                         "      <IconStyle>\r\n" +
                         "        <Icon>\r\n" +
-                        "          <href>http://maps.google.com/mapfiles/kml/shapes/cabs.png</href>\r\n" +
+                        "          <href>http://maps.google.com/mapfiles/kml/pal4/icon57.png</href>\r\n" +
                         "        </Icon>\r\n" +
                         "        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n" +
                         "      </IconStyle>\r\n" +
@@ -76,7 +76,6 @@ public class KML_Logger {
 			pw.close();
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }

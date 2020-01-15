@@ -1,6 +1,7 @@
 package gameClient;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -40,53 +41,37 @@ public class GameArena {
 		synchronized (fruits) {
 
 			fruits.clear();
-//			Iterator<String> it = game.getFruits().iterator();
-//
-//			while (it.hasNext()) {
-//
-//			String fruit_str = it.next();
 			if (fruits.isEmpty()) {
 				for (String fruit_str : game.getFruits()) {
 					Fruit fruit = new Fruit(fruit_str);
+
+					if (ClientThread.kml != null) {
+						Date date = new Date();
+						if (fruit.getType() == -1) {
+							ClientThread.kml.addPlacemark(date, fruit.getLocation(), "banana");
+						} else {
+							ClientThread.kml.addPlacemark(date, fruit.getLocation(), "apple");
+						}
+					}
+
 					setEdgeToFruits(fruit);
 					fruits.add(fruit);
-					// }
 				}
 				fruits.sort(_Comp);
-//				return;
 			}
-
-//			for(int i = 0 ; i < fruits.size(); i ++) {
-//				String curr_str = game.getFruits().get(i);
-//				Fruit curr = new Fruit(curr_str);
-//				Fruit origin = fruits.get(i);
-//				if(!origin.equals(curr)) {
-//					setEdgeToFruits(curr);
-//					fruits.remove(i);
-//					fruits.add(curr);
-//				}				
-//			}
-			// fruits.sort(_Comp);
 
 		}
 	}
 
 	private void initRobots() {
-//		synchronized (robots) {
-//			robots.clear();
-
-//			Iterator<String> it = game.getRobots().iterator();
-//			while (it.hasNext()) {
-//				String robot_str = it.next();
-
 		for (String robot_str : game.getRobots()) {
 			Robot robot = new Robot(robot_str);
-//				robots.add(robot);
+			if (ClientThread.kml != null) {
+				Date date = new Date();
+				ClientThread.kml.addPlacemark(date, robot.getLocation(), "robot");
+			}
 			robots.put(robot.getID(), robot);
-
-			// }
 		}
-//		}
 	}
 
 	private void setEdgeToFruits(Fruit fruit) {
@@ -119,7 +104,6 @@ public class GameArena {
 			JSONObject json_game = new JSONObject(game_str).getJSONObject("GameServer");
 			robots_num = json_game.getInt("robots");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		num_of_robots = robots_num;
@@ -194,8 +178,6 @@ public class GameArena {
 		if (!game.isRunning())
 			return -1;
 		Point3D p = new Point3D(original_x, original_y);
-//		ArrayList<Robot> tmp = (ArrayList<Robot>) robots.clone();
-//		synchronized (tmp) {
 
 		for (int i = 0; i < num_of_robots; i++) {
 			Robot robot = robots.get(i);
@@ -207,8 +189,6 @@ public class GameArena {
 				}
 
 			}
-//			}
-
 		}
 		return -1;
 	}

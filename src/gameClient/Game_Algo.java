@@ -19,22 +19,23 @@ public class Game_Algo extends Thread {
 		System.out.println("aaa");
 
 		while (g.isRunning()) {
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			ArrayList<Robot> tmp = (ArrayList<Robot>) arena.getRobots().clone();
-			synchronized (tmp) {
+//			try {
+//				Thread.sleep(50);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			ArrayList<Robot> tmp = (ArrayList<Robot>) arena.getRobots().clone();
+//			synchronized (tmp) {
 
-				for (Robot robot : tmp) {
+				for (int i = 0 ;i < arena.numOfRobots();i++) {
+					Robot robot = arena.getRobots().get(i);
 					if (robot != null && robot.getDest() == -1) {
 						int next = nextNode(robot.getSrc());
 						g.chooseNextEdge(robot.getID(), next);
 					}
 				}
-			}
+//			}
 		}
 	}
 

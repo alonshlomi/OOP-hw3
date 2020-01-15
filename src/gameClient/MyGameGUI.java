@@ -165,21 +165,25 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		for (int i = 0; i < rob.size(); i++) {
 			g.drawString(rob.get(i), WIDTH / 5, 70 + (20 * i));
 		}
-		synchronized (arena.getRobots()) {
+//		synchronized (arena.getRobots()) {
 
 //			Iterator<Robot> it = game.getRobots().iterator();
 //			while (it.hasNext()) {
 //				Robot robot = it.next();
-			for (Robot robot : arena.getRobots()) {
-				int robot_x = (int) scale(robot.getLocation().x(), minX, maxX, 50, WIDTH - 50);
-				int robot_y = (int) scale(robot.getLocation().y(), minY, maxY, 200, HEIGHT - 200);
+//			for (Robot robot : arena.getRobots()) {
 
-				g.setColor(Color.GRAY);
-				g.drawOval(robot_x - 15, robot_y - 15, 30, 30);
-				g.setFont(new Font("Arial", Font.BOLD, 15));
-				g.drawString(robot.getID() + "", robot_x - 5, robot_y + 5);
-				// }
-			}
+		for (int i = 0; i < arena.numOfRobots(); i++) {
+			Robot robot = arena.getRobots().get(i);
+
+			int robot_x = (int) scale(robot.getLocation().x(), minX, maxX, 50, WIDTH - 50);
+			int robot_y = (int) scale(robot.getLocation().y(), minY, maxY, 200, HEIGHT - 200);
+
+			g.setColor(Color.GRAY);
+			g.drawOval(robot_x - 15, robot_y - 15, 30, 30);
+			g.setFont(new Font("Arial", Font.BOLD, 15));
+			g.drawString(robot.getID() + "", robot_x - 5, robot_y + 5);
+			// }
+//			}
 		}
 	}
 

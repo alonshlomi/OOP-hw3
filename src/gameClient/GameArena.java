@@ -1,6 +1,7 @@
 package gameClient;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.json.JSONException;
@@ -17,9 +18,10 @@ public class GameArena {
 	private game_service game;
 	private graph game_graph;
 	private ArrayList<Fruit> fruits;
-	private ArrayList<Robot> robots;
+	private Hashtable<Integer, Robot> robots;
 
 	private double maxX, minX, maxY, minY;
+	private int num_of_robots;
 
 	public static final Fruit_Comparator _Comp = new Fruit_Comparator();
 
@@ -28,7 +30,7 @@ public class GameArena {
 		game_graph = new DGraph(game.getGraph());
 		setScaleParameters();
 		fruits = new ArrayList<Fruit>();
-		robots = new ArrayList<Robot>();
+		robots = new Hashtable<Integer, Robot>();
 		initFruits();
 		setRobotsPositions();
 		initRobots();
@@ -57,19 +59,21 @@ public class GameArena {
 	}
 
 	private void initRobots() {
-		synchronized (robots) {
-			robots.clear();
+//		synchronized (robots) {
+//			robots.clear();
 
 //			Iterator<String> it = game.getRobots().iterator();
 //			while (it.hasNext()) {
 //				String robot_str = it.next();
 
-			for (String robot_str : game.getRobots()) {
-				Robot robot = new Robot(robot_str);
-				robots.add(robot);
-				// }
-			}
+		for (String robot_str : game.getRobots()) {
+			Robot robot = new Robot(robot_str);
+//				robots.add(robot);
+			robots.put(robot.getID(), robot);
+
+			// }
 		}
+//		}
 	}
 
 	private void setEdgeToFruits(Fruit fruit) {
@@ -105,6 +109,7 @@ public class GameArena {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		num_of_robots = robots_num;
 		return robots_num;
 	}
 
@@ -130,7 +135,7 @@ public class GameArena {
 		return fruits;
 	}
 
-	public synchronized ArrayList<Robot> getRobots() {
+	public Hashtable<Integer, Robot> getRobots() {
 		return robots;
 	}
 
@@ -168,22 +173,28 @@ public class GameArena {
 		return minY;
 	}
 
-	public int getRobotFromCoordinates(double original_x, double original_y) {
-		if(!game.isRunning()) return -1;
-		Point3D p = new Point3D(original_x, original_y);
-		ArrayList<Robot> tmp = (ArrayList<Robot>) robots.clone();
-		synchronized (tmp) {
+	public int numOfRobots() {
+		return num_of_robots;
+	}
 
-			for (Robot robot : tmp) {
-				if (robot.getDest() == -1) {
-					
-					double dist = robot.getLocation().distance2D(p);
-					if (dist <= 0.0003) {
-						return robot.getID();
-					}
-					
+	public int getRobotFromCoordinates(double original_x, double original_y) {
+		if (!game.isRunning())
+			return -1;
+		Point3D p = new Point3D(original_x, original_y);
+//		ArrayList<Robot> tmp = (ArrayList<Robot>) robots.clone();
+//		synchronized (tmp) {
+
+		for (int i = 0; i < num_of_robots; i++) {
+			Robot robot = robots.get(i);
+			if (robot.getDest() == -1) {
+
+				double dist = robot.getLocation().distance2D(p);
+				if (dist <= 0.0003) {
+					return robot.getID();
 				}
+
 			}
+//			}
 
 		}
 		return -1;

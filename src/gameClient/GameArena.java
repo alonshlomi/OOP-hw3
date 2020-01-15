@@ -130,7 +130,7 @@ public class GameArena {
 		return fruits;
 	}
 
-	public ArrayList<Robot> getRobots() {
+	public synchronized ArrayList<Robot> getRobots() {
 		return robots;
 	}
 
@@ -169,6 +169,7 @@ public class GameArena {
 	}
 
 	public int getRobotFromCoordinates(double original_x, double original_y) {
+		if(!game.isRunning()) return -1;
 		Point3D p = new Point3D(original_x, original_y);
 		ArrayList<Robot> tmp = (ArrayList<Robot>) robots.clone();
 		synchronized (tmp) {

@@ -20,10 +20,7 @@ public class ClientThread extends Thread {
 		arena = new GameArena(scenario);
 		window = new MyGameGUI(arena, auto_game);
 
-		if (auto_game) {
-			Game_Algo autogame = new Game_Algo(scenario);
-			autogame.start();
-		}
+
 	}
 
 	@Override
@@ -31,14 +28,19 @@ public class ClientThread extends Thread {
 		try {
 			game_service g = arena.getGame();
 			g.startGame();
+			
+			if (auto_game) {
+				Game_Algo autogame = new Game_Algo(arena);
+				autogame.start();
+			}
+			
 			while (g.isRunning()) {
-				Thread.sleep(100);
+				Thread.sleep(150);
 				g.move();
 				arena.update();
 				window.repaint();
 			}
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -47,7 +49,6 @@ public class ClientThread extends Thread {
 		JOptionPane.showMessageDialog(window, "Game Over!\nPoints earned: "+grade+" in "+moves+" moves.");
 		window.setVisible(false);	
 		System.exit(1);
-		
 		
 	}
 
@@ -107,7 +108,6 @@ public class ClientThread extends Thread {
 		init();
 		ClientThread client = new ClientThread();
 		client.start();
-
 	}
 
 }

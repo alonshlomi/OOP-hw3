@@ -2,6 +2,12 @@ package gameClient;
 
 import java.util.Comparator;
 
+/**
+ * Implemention of a fruits comparator by value.
+ * @author Alon Perlmuter.
+ * @author Shlomi Daari.
+ *
+ */
 public class Fruit_Comparator implements Comparator<Fruit> {
 
 	@Override

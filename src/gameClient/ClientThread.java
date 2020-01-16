@@ -1,10 +1,5 @@
 package gameClient;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -12,72 +7,76 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import Server.game_service;
-import dataStructure.node_data;
 
+/**
+ * This class is attaching the arena to GUI and using the server in thread.
+ * @author Alon Perlmuter.
+ * @author Shlomi Daari.
+ */
 public class ClientThread extends Thread {
 
-	private MyGameGUI window;
-	private GameArena arena;
-	static KML_Logger kml = null;
-	
-	private static int scenario = 0;
-	private static boolean auto_game = true;
+	private MyGameGUI window; // GUI object.
+	private GameArena arena;  // arena object.
 
+	/**
+	 * default scenario
+	 */
+	private static int scenario = 0;
+	/**
+	 * default game mode
+	 */
+	private static boolean auto_game = true;
+	
+	/**
+	 * Constructor initiate the GUI and arena.
+	 */
 	public ClientThread() {
 		arena = new GameArena(scenario);
 		window = new MyGameGUI(arena, auto_game);
-
-
 	}
-
+	
+	/**
+	 * Running the game on the background
+	 */
 	@Override
 	public void run() {
+		game_service g = arena.getGame();
+		g.startGame();	// start game
+
+		AutoGame autogame = null;
+		if (auto_game) { // initiate auto-game if auto mode has been chosen
+			autogame = new AutoGame(arena);
+			autogame.start();
+		}
 		try {
-			game_service g = arena.getGame();
-			
-			//Initialize KML
-			kml = new KML_Logger(scenario);
-			addNodesToKML(); //Export graph nodes to KML
-			//
-			
-			g.startGame();
-			
-			if (auto_game) {
-				Game_Algo autogame = new Game_Algo(arena);
-				autogame.start();
-			}
-			
-			int dt = 70;
+			int dt = 100;
 			while (g.isRunning()) {
-				
-				if(g.timeToEnd() <= 25000) {
-					dt =50;
+				if (g.timeToEnd() <= 25000) {
+					if (scenario >= 20) {
+						dt = 45;
+					}
 				}
 				Thread.sleep(dt);
-				g.move();
-				arena.update();
-				window.repaint();
+				g.move();	// move robots
+				arena.update();	// update arena
+				window.repaint(); // repaint GUI
 			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		kml.end();
+			if (autogame != null) {
+				autogame.interrupt(); // kill auto-game thread if still running
+			}
+		} catch (Exception e) {}
+
+		KML_Logger.getInstance(scenario).end(); // close KML file
 		double grade = getGrade();
 		int moves = getMoves();
-		JOptionPane.showMessageDialog(window, "Game Over!\nPoints earned: "+grade+" in "+moves+" moves.");
-		window.setVisible(false);	
-		System.exit(1);
-		
+		JOptionPane.showMessageDialog(window, "Game Over!\nPoints earned: " + grade + " in " + moves + " moves."); // message with grade and moves
+		window.setVisible(false);
+		System.exit(0); // successfully exited
+
 	}
 
-	private void addNodesToKML() {
-		for (node_data node : arena.getGraph().getV()) {
-			Date date = new Date();
-			kml.addPlacemark(date, node.getLocation(), "node");
-		}
-	}
 
+	// Returns the moves played in current game:
 	private int getMoves() {
 		int moves = -1;
 		try {
@@ -89,6 +88,8 @@ public class ClientThread extends Thread {
 		return moves;
 	}
 
+	
+	// Returns the points earned in current game:
 	private double getGrade() {
 		int grade = -1;
 		try {
@@ -100,12 +101,12 @@ public class ClientThread extends Thread {
 		}
 		return grade;
 	}
-	
+
+	// Opening window for choosing scenario and mode: 
 	private static void init() {
 		JFrame frame = new JFrame();
 		frame.setBounds(200, 0, 500, 500);
 		try {
-
 
 			String[] modes = { "Manual", "Auto" };
 			String stage = JOptionPane.showInputDialog(frame, "Please insert a scenerio [0-23]");
@@ -113,27 +114,27 @@ public class ClientThread extends Thread {
 					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, modes, modes[1]);
 
 			scenario = Integer.parseInt(stage);
-			
-			if(scenario >23 || scenario < 0) throw new RuntimeException();
-			
+
+			if (scenario > 23 || scenario < 0)
+				throw new RuntimeException();
+
+			auto_game = true;
 			if (mode == 0) {
 				auto_game = false;
-			} else {
-				auto_game = true;
 			}
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(frame, "Invalid input.\nPlaying default game", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frame, "Invalid input.\nPlaying default game", "Error",
+					JOptionPane.ERROR_MESSAGE);
 			scenario = 0;
-			auto_game =true;
+			auto_game = true;
 		}
 
 	}
 
+	// Run program:
 	public static void main(String[] args) {
 		init();
 		ClientThread client = new ClientThread();
 		client.start();
-
 	}
-
 }

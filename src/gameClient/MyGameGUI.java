@@ -14,15 +14,34 @@ import javax.swing.JOptionPane;
 
 import dataStructure.*;
 
+/**
+ * This class is a GUI class which draw the game arena.
+ * 
+ * @author Alon Perlmuter.
+ * @author Shlomi Daari.
+ * 
+ */
 public class MyGameGUI extends JFrame implements MouseListener {
 
+	/**
+	 * default frame width
+	 */
 	private static int WIDTH = 1200;
+	/**
+	 * default frame height
+	 */
 	private static int HEIGHT = 800;
-	private static double arena_maxX, arena_maxY, arena_minX, arena_minY;
+	private static double arena_maxX, arena_maxY, arena_minX, arena_minY; // game graph parameters for scaling
 
-	private GameArena arena;
-	private boolean auto_game;
+	private GameArena arena; // arena object
+	private boolean auto_game; // variable indicates whether is auto game or not
 
+	/**
+	 * Constructor initiate the GUI.
+	 * 
+	 * @param arena
+	 * @param b     - game mode
+	 */
 	public MyGameGUI(GameArena arena, boolean b) {
 		this.arena = arena;
 		this.auto_game = b;
@@ -33,23 +52,28 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		initGUI();
 	}
 
+	// Initiate GUI:
 	private void initGUI() {
-		this.setTitle("Graph GUI");
+		this.setTitle("The Maze of Waze");
 		this.setBounds(200, 0, WIDTH, HEIGHT);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		this.setVisible(true);
-		if (!auto_game) {
+		if (!auto_game) { // use mouse-listener if manual mode has been chosen
 			this.addMouseListener(this);
 		}
 	}
 
+	// Draw time to end:
 	private void setTime(Graphics2D g) {
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Arial", Font.BOLD, 15));
 		g.drawString("Time: " + arena.getGame().timeToEnd() / 1000, 50, 70);
 	}
 
+	/**
+	 * Painting arena using buffered image to avoid frame flashing:
+	 */
 	public void paint(Graphics g) {
 		BufferedImage bufferedImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = bufferedImage.createGraphics();
@@ -68,6 +92,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 
 	}
 
+	// Paint graph nodes and edges:
 	private void paintGraph(Graphics2D g) {
 		WIDTH = getWidth();
 		HEIGHT = getHeight();
@@ -113,6 +138,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		}
 	}
 
+	// Paint fruits:
 	private void paintFruits(Graphics2D g) {
 		synchronized (arena.getFruits()) {
 			WIDTH = getWidth();
@@ -136,6 +162,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		}
 	}
 
+	// Paint robots:
 	private void paintRobots(Graphics2D g) {
 		WIDTH = getWidth();
 		HEIGHT = getHeight();
@@ -148,7 +175,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		for (int i = 0; i < rob.size(); i++) {
 			g.drawString(rob.get(i), WIDTH / 5, 70 + (20 * i));
 		}
-		
+
 		for (int i = 0; i < arena.numOfRobots(); i++) {
 			Robot robot = arena.getRobots().get(i);
 
@@ -156,21 +183,16 @@ public class MyGameGUI extends JFrame implements MouseListener {
 			int robot_y = (int) scale(robot.getLocation().y(), minY, maxY, 200, HEIGHT - 200);
 
 			g.setColor(Color.GRAY);
+			if (robot.getDest() == -1) {
+				g.setColor(Color.RED);
+			}
 			g.drawOval(robot_x - 15, robot_y - 15, 30, 30);
 			g.setFont(new Font("Arial", Font.BOLD, 15));
 			g.drawString(robot.getID() + "", robot_x - 5, robot_y + 5);
 		}
 	}
 
-	/**
-	 * 
-	 * @param data  denote some data to be scaled
-	 * @param r_min the minimum of the range of your data
-	 * @param r_max the maximum of the range of your data
-	 * @param t_min the minimum of the range of your desired target scaling
-	 * @param t_max the maximum of the range of your desired target scaling
-	 * @return
-	 */
+	// Scaling methods: (Yael's code)
 	private double scale(double data, double r_min, double r_max, double t_min, double t_max) {
 
 		double res = ((data - r_min) / (r_max - r_min)) * (t_max - t_min) + t_min;
@@ -194,23 +216,26 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		double maxX = arena_maxX;
 		double maxY = arena_maxY;
 
+		// Choose robot by click:
 		int x = e.getX(), y = e.getY();
 		double original_x = scaleBack(x, minX, maxX, 50, WIDTH - 50);
 		double original_y = scaleBack(y, minY, maxY, 200, HEIGHT - 200);
 
 		int rid = arena.getRobotFromCoordinates(original_x, original_y);
+		//
 
 		if (rid != -1) {
+			// Enter node destination:
 			String dest_str = JOptionPane.showInputDialog("Enter next node for robot: " + rid);
 			int dest = -1;
 			try {
 				dest = Integer.parseInt(dest_str);
+				// Server call:
+				arena.getGame().chooseNextEdge(rid, dest);
 			} catch (Exception e1) {
 				JOptionPane.showMessageDialog(this, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
-			arena.getGame().chooseNextEdge(rid, dest);
 		}
-
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package gameClient;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -9,30 +8,46 @@ import java.util.Date;
 
 import utils.Point3D;
 
+/**
+ * This class helps us to export a KML file from our game.
+ * The Class implemented by Singelton Design Pattern.
+ * @author Alon Perlmuter.
+ * @author Shlomi Daari.
+ */
 public class KML_Logger {
 
-    private String name;
-    private int stage;
+    private int scenario;
     private StringBuilder content;
+    
+    private final String FOLDER = "data/"; 	// folder name.
+    private final String _KML = ".kml"; 	// file format.
+    
+    private static KML_Logger kml_logger = null; // for Singelton use.
 
-    public KML_Logger(int stage) {
-        this.stage = stage;
+    /**
+     * Private constructor for Singelton use and initialize the beginning of the file.
+     * @param scenario number.
+     */
+    private KML_Logger(int scenario) {
+        this.scenario = scenario;
         content = new StringBuilder();
-        this.name="Scenario number "+stage;
         start();
     }
-
+    
+    /**
+     * Initiate the beginning of the file by scenario number.
+     */
     public void start()
     {
         content.append(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
                         "<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n" +
                         "  <Document>\r\n" +
-                        "    <name>" + this.name + "</name>" +
+                        "    <name>Scenario number " + this.scenario + "</name>" +
                         " <Style id=\"node\">\r\n" +
                         "      <IconStyle>\r\n" +
                         "        <Icon>\r\n" +
-                        "          <href>http://maps.google.com/mapfiles/kml/shapes/earthquake.png</href>\r\n" +
+                        "          <href>http://maps.google.com/mapfiles/kml/pushpin/wht-pushpin.png</href>\r\n" +
                         "        </Icon>\r\n" +
                         "        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n" +
                         "      </IconStyle>\r\n" +
@@ -60,28 +75,18 @@ public class KML_Logger {
                         "        </Icon>\r\n" +
                         "        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n" +
                         "      </IconStyle>\r\n" +
-                        "    </Style>"
+                        "    </Style>\r\n"
         );
 	}
     
-    public void end() {
-    	content.append(
-    			"  </Document>\r\n" + 
-    			"</kml>"
-    			);
-    	File f = new File("data/"+stage+".kml");
-    	try {
-			PrintWriter pw = new PrintWriter(f);
-			pw.write(content.toString());
-			pw.close();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-    
-	public void addPlacemark(Date date, Point3D coordinate, String obj_type) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'z'");
+    /**
+     * Add placemark in KML file.
+     * @param coordinate - the position.
+     * @param obj_type - the icon type.
+     */
+	public void addPlacemark(Point3D coordinate, String obj_type) {
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
 		String time_stamp = sdf.format(date);
 		
 		content.append("<Placemark>\r\n" + 
@@ -96,7 +101,37 @@ public class KML_Logger {
 				);
 
 	}
+	
+	/**
+	 * Closing the String and writing it on a file.
+	 */
+    public void end() {
+    	content.append(
+    			"  </Document>\r\n" + 
+    			"</kml>"
+    			);
+    	File f = new File(FOLDER+scenario+_KML);
+    	try {
+			PrintWriter pw = new PrintWriter(f);
+			pw.write(content.toString());
+			pw.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
     
+    /**
+     * Static function that creates a only one object of KML_Logger type. (Singelton Design Pattern)
+     * @param scenario number.
+     * @return KML_Logger object
+     */
+	public static KML_Logger getInstance(int scenario) {
+		if (kml_logger == null) {
+					kml_logger = new KML_Logger(scenario);
+		}
+		return kml_logger;
+	}
 	
 	
 }

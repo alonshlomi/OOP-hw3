@@ -2,7 +2,7 @@
 
 This project is an implemention of a basic game based on previous assignment.  
 In this game we play with _Robots_ collecting _Fruits_ on a weighted graph.  
-The goal of the game is to earn as many points as possible in given time. (30-60 seconds)
+The goal of the game is to earn as many points as possible in given time. (30-60 seconds)  
 The game has 24 levels, starting in 0 and the level of difficulty increases, each level is exported to KML file.  
 The game can be play in 2 modes: _Manual_(by user) , _Auto_(by computer)  
 

@@ -22,7 +22,7 @@ The package we programmed in this game is **gameClient** contains 7 classes:
 
 (More details about the classes can be found on Wiki)
 
-Example: (Level 23, Auto mode)  
+##### Example: (Level 23, Auto mode)  
 ![example](https://github.com/alonshlomi/OOP-hw3/blob/master/images/example.png)
 
 

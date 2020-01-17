@@ -10,13 +10,14 @@ import Server.game_service;
 
 /**
  * This class is attaching the arena to GUI and using the server in thread.
+ * 
  * @author Alon Perlmuter.
  * @author Shlomi Daari.
  */
 public class ClientThread extends Thread {
 
 	private MyGameGUI window; // GUI object.
-	private GameArena arena;  // arena object.
+	private GameArena arena; // arena object.
 
 	/**
 	 * default scenario
@@ -26,7 +27,7 @@ public class ClientThread extends Thread {
 	 * default game mode
 	 */
 	private static boolean auto_game = true;
-	
+
 	/**
 	 * Constructor initiate the GUI and arena.
 	 */
@@ -34,14 +35,14 @@ public class ClientThread extends Thread {
 		arena = new GameArena(scenario);
 		window = new MyGameGUI(arena, auto_game);
 	}
-	
+
 	/**
 	 * Running the game on the background
 	 */
 	@Override
 	public void run() {
 		game_service g = arena.getGame();
-		g.startGame();	// start game
+		g.startGame(); // start game
 
 		AutoGame autogame = null;
 		if (auto_game) { // initiate auto-game if auto mode has been chosen
@@ -49,34 +50,40 @@ public class ClientThread extends Thread {
 			autogame.start();
 		}
 		try {
-			int dt = 100;
+			int dt = 70;
+			int i = 0;
 			while (g.isRunning()) {
-				if (g.timeToEnd() <= 25000) {
-					if (scenario >= 20) {
-						dt = 45;
-					}
+				if (i % 2 == 0) {
+					g.move(); // move robots
+					arena.update(); // update arena
 				}
-				Thread.sleep(dt);
-				g.move();	// move robots
-				arena.update();	// update arena
 				window.repaint(); // repaint GUI
+				Thread.sleep(dt);
+				i++;
 			}
 			if (autogame != null) {
 				autogame.interrupt(); // kill auto-game thread if still running
 			}
-		} catch (Exception e) {}
+		} catch (
+
+		Exception e) {
+			System.out.println("aa");
+			e.printStackTrace();
+			/* need to remove */} //
 
 		KML_Logger.getInstance(scenario).end(); // close KML file
 		double grade = getGrade();
 		int moves = getMoves();
-		JOptionPane.showMessageDialog(window, "Game Over!\nPoints earned: " + grade + " in " + moves + " moves."); // message with grade and moves
+
+		// message with grade and moves
+		JOptionPane.showMessageDialog(window, "Game Over!\nPoints earned: " + grade + " in " + moves + " moves.");
 		window.setVisible(false);
-		System.exit(0); // successfully exited
+		System.exit(0); // successfully
+						// exited
 
 	}
 
-
-	// Returns the moves played in current game:
+// Returns the moves played in current game:
 	private int getMoves() {
 		int moves = -1;
 		try {
@@ -87,9 +94,8 @@ public class ClientThread extends Thread {
 		}
 		return moves;
 	}
+// Returns the points earned in current game:
 
-	
-	// Returns the points earned in current game:
 	private double getGrade() {
 		int grade = -1;
 		try {
@@ -102,7 +108,7 @@ public class ClientThread extends Thread {
 		return grade;
 	}
 
-	// Opening window for choosing scenario and mode: 
+	// Opening window for choosing scenario and mode:
 	private static void init() {
 		JFrame frame = new JFrame();
 		frame.setBounds(200, 0, 500, 500);

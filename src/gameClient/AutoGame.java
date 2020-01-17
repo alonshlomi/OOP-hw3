@@ -36,6 +36,7 @@ public class AutoGame extends Thread {
 	public void run() {
 		try {
 			game_service g = arena.getGame();
+			Thread.sleep(10);
 			initPaths();	// initiate first path
 			while (g.timeToEnd() >= 50) {
 				for (int i = 0; i < arena.numOfRobots(); i++) {	// take all robots
@@ -46,7 +47,7 @@ public class AutoGame extends Thread {
 					}
 				}
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {e.printStackTrace();/* need to remove */} //
 	}
 
 	// Initiate the first path to the robots:

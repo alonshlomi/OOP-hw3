@@ -32,6 +32,9 @@ public class GameArena {
 	
 	private static final double EPS = 0.0003; // epsilon
 	
+	// Empty constructor:
+	public GameArena() {}
+	
 	/**
 	 * Constructor that initiate the arena with data given by the server.
 	 * Initiate KML file, graph parameters and places the robots.
@@ -95,13 +98,11 @@ public class GameArena {
 				double d2 = fruit.getLocation().distance2D(dst.getLocation());
 				double dist = node.getLocation().distance2D(dst.getLocation());
 				double tmp = dist - (d1 + d2);
-				int t;
+				int t = 1;
 				if (node.getKey() > dst.getKey()) {
 					t = -1;
-				} else {
-					t = 1;
-				}
-
+				} 
+				
 				if ((Math.abs(tmp) <= Point3D.EPS2) && (fruit.getType() == t)) {
 					fruit.setEdge(edge);
 					return;

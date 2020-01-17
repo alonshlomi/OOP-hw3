@@ -57,7 +57,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		this.setTitle("The Maze of Waze");
 		this.setBounds(200, 0, WIDTH, HEIGHT);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		
 		this.setVisible(true);
 		if (!auto_game) { // use mouse-listener if manual mode has been chosen
 			this.addMouseListener(this);

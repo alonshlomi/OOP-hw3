@@ -35,7 +35,6 @@ class FruitTest {
 		f2_value = (Math.random() * 10 + 5);
 		int f2_type = -1;
 		String f2_json = fruitToJSON(f2_value, f2_type, f2_pos);
-
 		
 		f1 = new Fruit(f1_json);
 		f2 = new Fruit(f2_json);

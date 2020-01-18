@@ -22,7 +22,23 @@ The package we programmed in this game is **gameClient** contains 7 classes:
 
 (More details about the classes can be found on Wiki)
 
-##### Example: (Level 23, Auto mode)  
+#### How to play The Maze of Waze:  
+* Launch the game and choose scenario: (0-23)  
+![launch](https://github.com/alonshlomi/OOP-hw3/blob/master/images/scenario.png)
+
+* Choose playing mode: (_Auto_ or _Manual_)   
+![mode](https://github.com/alonshlomi/OOP-hw3/blob/master/images/mode.png)
+
+* Start playing:  
 ![example](https://github.com/alonshlomi/OOP-hw3/blob/master/images/example.png)
+
+* Click on any robot to choose its next node: (in manual mode)  
+![robot](https://github.com/alonshlomi/OOP-hw3/blob/master/images/robot.png)
+
+* Choose whether you want to export KML file or not:  
+![kml](https://github.com/alonshlomi/OOP-hw3/blob/master/images/kml.png)  
+
+* The score you earnd will be shown:  
+![score](https://github.com/alonshlomi/OOP-hw3/blob/master/images/score.png)
 
 

@@ -79,7 +79,6 @@ public class GameArena {
 	}
 	
 	// Initiate robots from json string to Robot object:
-
 	private void initRobots() {
 		for (String robot_str : game.getRobots()) {
 			Robot robot = new Robot(robot_str);
@@ -87,7 +86,6 @@ public class GameArena {
 			robots.put(robot.getID(), robot);
 		}
 	}
-
 
 	// Fit specific fruit to an edge is sitting on:
 	private void setEdgeToFruits(Fruit fruit) {
@@ -111,7 +109,6 @@ public class GameArena {
 		}
 	}
 
-
 	// Returns the num of robots in this game:
 	private int robotsNum() {
 		String game_str = game.toString();
@@ -126,7 +123,6 @@ public class GameArena {
 		return robots_num;
 	}
 
-
 	// Initiate starting position, near the highest value fruits: (strategic decision)
 	private void setRobotsPositions() {
 		int robots_num = robotsNum();
@@ -136,7 +132,6 @@ public class GameArena {
 			game.addRobot(src_node);
 		}
 	}
-
 
 	// Initiate min/max X's and Y's for scaling:
 	private void setScaleParameters() {
@@ -171,7 +166,6 @@ public class GameArena {
 		initFruits();
 		initRobots();
 	}
-
 	
 	/**
 	 * 
@@ -181,7 +175,6 @@ public class GameArena {
 		return game;
 	}
 
-
 	/**
 	 * 
 	 * @return fruits list.
@@ -189,7 +182,6 @@ public class GameArena {
 	public ArrayList<Fruit> getFruits() {
 		return fruits;
 	}
-
 
 	/**
 	 * 
@@ -199,7 +191,6 @@ public class GameArena {
 		return robots;
 	}
 
-
 	/**
 	 * 
 	 * @return maximum X on graph.
@@ -207,7 +198,6 @@ public class GameArena {
 	public double maxX() {
 		return maxX;
 	}
-
 
 	/**
 	 * 
@@ -217,7 +207,6 @@ public class GameArena {
 		return minX;
 	}
 
-
 	/**
 	 * 
 	 * @return maximum Y on graph.
@@ -225,7 +214,6 @@ public class GameArena {
 	public double maxY() {
 		return maxY;
 	}
-
 
 	/**
 	 * 
@@ -235,7 +223,6 @@ public class GameArena {
 		return minY;
 	}
 
-
 	/**
 	 * 
 	 * @return num of robots.
@@ -243,7 +230,6 @@ public class GameArena {
 	public int numOfRobots() {
 		return num_of_robots;
 	}
-
 
 	/**
 	 * Returns id of a robot which is approximately places in (x,y) coordinates.
@@ -269,8 +255,6 @@ public class GameArena {
 		}
 		return -1;
 	}
-
-
 
 	/**
 	 * 

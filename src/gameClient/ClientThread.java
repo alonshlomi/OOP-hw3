@@ -21,7 +21,7 @@ public class ClientThread extends Thread {
 	private MyGameGUI window; // GUI object.
 	private GameArena arena; // arena object.
 	private KML_Logger kml;
-	
+
 	/**
 	 * default scenario
 	 */
@@ -53,7 +53,7 @@ public class ClientThread extends Thread {
 			autogame.start();
 		}
 		try {
-			int dt = 70;
+			int dt = 65;
 			int i = 0;
 			while (g.isRunning()) {
 				if (i % 2 == 0) {
@@ -77,7 +77,7 @@ public class ClientThread extends Thread {
 		kml = KML_Logger.getInstance(scenario); // close KML file
 		kml.end();
 		KMLDialog();
-		
+
 		double grade = getGrade();
 		int moves = getMoves();
 
@@ -89,14 +89,15 @@ public class ClientThread extends Thread {
 
 	}
 
+	// KML dialog for the user to choose.
 	private void KMLDialog() {
 		int ans = JOptionPane.showConfirmDialog(window, "Export to KML?");
-		if(ans == 0) {
+		if (ans == 0) {
 			kml.export();
 		}
 	}
 
-// Returns the moves played in current game:
+	// Returns the moves played in current game:
 	private int getMoves() {
 		int moves = -1;
 		try {
@@ -107,8 +108,8 @@ public class ClientThread extends Thread {
 		}
 		return moves;
 	}
-// Returns the points earned in current game:
 
+	// Returns the points earned in current game:
 	private double getGrade() {
 		int grade = -1;
 		try {
@@ -128,7 +129,7 @@ public class ClientThread extends Thread {
 		try {
 
 			String[] modes = { "Manual", "Auto" };
-			String stage = JOptionPane.showInputDialog(frame, "Please insert a scenerio [0-23]");
+			String stage = JOptionPane.showInputDialog(frame,"Please insert a scenerio [0-23]");
 			int mode = JOptionPane.showOptionDialog(frame, "Choose option", "The Maze of Waze",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, modes, modes[1]);
 
@@ -150,22 +151,10 @@ public class ClientThread extends Thread {
 
 	}
 
-	// Run program:
+	// Run program:	
 	public static void main(String[] args) {
 		init();
 		ClientThread client = new ClientThread();
 		client.start();
-		
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					init();
-//					ClientThread client = new ClientThread();
-//					client.start();
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
 	}
 }

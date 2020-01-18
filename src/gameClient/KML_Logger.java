@@ -103,7 +103,7 @@ public class KML_Logger {
 	}
 	
 	/**
-	 * Closing the String and writing it on a file.
+	 * Closing the file.
 	 */
     public void end() {
     	content.append(
@@ -112,6 +112,9 @@ public class KML_Logger {
     			);
     }
     
+    /**
+     * Writing to a file.
+     */
     public void export() {
     	File f = new File(FOLDER+scenario+_KML);
     	try {

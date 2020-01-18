@@ -1,5 +1,7 @@
 package gameClient;
 
+import java.awt.EventQueue;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -18,7 +20,8 @@ public class ClientThread extends Thread {
 
 	private MyGameGUI window; // GUI object.
 	private GameArena arena; // arena object.
-
+	private KML_Logger kml;
+	
 	/**
 	 * default scenario
 	 */
@@ -71,7 +74,10 @@ public class ClientThread extends Thread {
 			e.printStackTrace();
 			/* need to remove */} //
 
-		KML_Logger.getInstance(scenario).end(); // close KML file
+		kml = KML_Logger.getInstance(scenario); // close KML file
+		kml.end();
+		KMLDialog();
+		
 		double grade = getGrade();
 		int moves = getMoves();
 
@@ -81,6 +87,13 @@ public class ClientThread extends Thread {
 		System.exit(0); // successfully
 						// exited
 
+	}
+
+	private void KMLDialog() {
+		int ans = JOptionPane.showConfirmDialog(window, "Export to KML?");
+		if(ans == 0) {
+			kml.export();
+		}
 	}
 
 // Returns the moves played in current game:
@@ -142,5 +155,17 @@ public class ClientThread extends Thread {
 		init();
 		ClientThread client = new ClientThread();
 		client.start();
+		
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					init();
+//					ClientThread client = new ClientThread();
+//					client.start();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
 	}
 }

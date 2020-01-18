@@ -110,6 +110,9 @@ public class KML_Logger {
     			"  </Document>\r\n" + 
     			"</kml>"
     			);
+    }
+    
+    public void export() {
     	File f = new File(FOLDER+scenario+_KML);
     	try {
 			PrintWriter pw = new PrintWriter(f);

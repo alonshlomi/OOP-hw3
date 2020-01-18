@@ -173,6 +173,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 
 		List<String> rob = arena.getGame().getRobots();
 		for (int i = 0; i < rob.size(); i++) {
+			g.setFont(new Font("Arial", Font.BOLD, 12));
 			g.drawString(rob.get(i), WIDTH / 5, 70 + (20 * i));
 		}
 

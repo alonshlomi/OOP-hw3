@@ -29,7 +29,7 @@ public class GameArena {
 
 	private double maxX, minX, maxY, minY; // graph parameters.
 	private int num_of_robots; // num of robots.
-	
+	private int scenario;
 	private static final double EPS = 0.0003; // epsilon
 	
 	// Empty constructor:
@@ -41,6 +41,7 @@ public class GameArena {
 	 * @param scenario number.
 	 */
 	public GameArena(int scenario) {
+		this.scenario = scenario;
 		kml = KML_Logger.getInstance(scenario); // initiate KML
 		game = Game_Server.getServer(scenario); // initiate the game
 		game_graph = new DGraph(game.getGraph());
@@ -231,6 +232,14 @@ public class GameArena {
 		return num_of_robots;
 	}
 
+	/**
+	 * 
+	 * @return scenario number
+	 */
+	public int getScenario() {
+		return scenario;
+	}
+	
 	/**
 	 * Returns id of a robot which is approximately places in (x,y) coordinates.
 	 * @param x coordinate.

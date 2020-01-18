@@ -54,7 +54,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 
 	// Initiate GUI:
 	private void initGUI() {
-		this.setTitle("The Maze of Waze");
+		this.setTitle("The Maze of Waze - scenario "+arena.getScenario());
 		this.setBounds(200, 0, WIDTH, HEIGHT);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		

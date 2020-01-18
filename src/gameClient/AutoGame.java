@@ -47,7 +47,7 @@ public class AutoGame extends Thread {
 					}
 				}
 			}
-		} catch (Exception e) {e.printStackTrace();/* need to remove */} //
+		} catch (Exception e) {}
 	}
 
 	// Initiate the first path to the robots:

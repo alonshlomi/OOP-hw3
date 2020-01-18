@@ -1,7 +1,5 @@
 package gameClient;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -67,12 +65,7 @@ public class ClientThread extends Thread {
 			if (autogame != null) {
 				autogame.interrupt(); // kill auto-game thread if still running
 			}
-		} catch (
-
-		Exception e) {
-			System.out.println("aa");
-			e.printStackTrace();
-			/* need to remove */} //
+		} catch (Exception e) {}
 
 		kml = KML_Logger.getInstance(scenario); // close KML file
 		kml.end();
@@ -84,9 +77,7 @@ public class ClientThread extends Thread {
 		// message with grade and moves
 		JOptionPane.showMessageDialog(window, "Game Over!\nPoints earned: " + grade + " in " + moves + " moves.");
 		window.setVisible(false);
-		System.exit(0); // successfully
-						// exited
-
+		System.exit(0); // successfully exited
 	}
 
 	// KML dialog for the user to choose.
@@ -129,7 +120,7 @@ public class ClientThread extends Thread {
 		try {
 
 			String[] modes = { "Manual", "Auto" };
-			String stage = JOptionPane.showInputDialog(frame,"Please insert a scenerio [0-23]");
+			String stage = JOptionPane.showInputDialog(frame, "Please insert a scenerio [0-23]");
 			int mode = JOptionPane.showOptionDialog(frame, "Choose option", "The Maze of Waze",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, modes, modes[1]);
 
@@ -151,7 +142,7 @@ public class ClientThread extends Thread {
 
 	}
 
-	// Run program:	
+	// Run program:
 	public static void main(String[] args) {
 		init();
 		ClientThread client = new ClientThread();

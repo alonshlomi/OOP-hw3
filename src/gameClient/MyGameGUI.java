@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -78,6 +79,12 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		BufferedImage bufferedImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = bufferedImage.createGraphics();
 
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
+                RenderingHints.VALUE_STROKE_PURE);
 		g2d.setBackground(new Color(240, 240, 240));
 		g2d.clearRect(0, 0, WIDTH, HEIGHT);
 
@@ -94,6 +101,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 
 	// Paint graph nodes and edges:
 	private void paintGraph(Graphics2D g) {
+		
 		WIDTH = getWidth();
 		HEIGHT = getHeight();
 		double minX = arena_minX;

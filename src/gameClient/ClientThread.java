@@ -51,7 +51,7 @@ public class ClientThread extends Thread {
 			autogame.start();
 		}
 		try {
-			int dt = 65;
+			int dt = 35;
 			int i = 0;
 			while (g.isRunning()) {
 				if (i % 2 == 0) {

@@ -2,3 +2,5 @@
 src/Main.java
 src/gameClient/SimpleGameClient.java
 /bin
+src/gameClient/SimpleDB.java
+src/gameClient/Ex4_Client.java

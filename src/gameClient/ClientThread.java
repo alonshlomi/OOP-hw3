@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import Server.Game_Server;
 import Server.game_service;
 
 /**
@@ -42,35 +43,38 @@ public class ClientThread extends Thread {
 	 */
 	@Override
 	public void run() {
+		int id = 999;
+	//	Game_Server.login(id); 
 		game_service g = arena.getGame();
 		g.startGame(); // start game
-
-		AutoGame autogame = null;
+		
+		AutoGame auto = null;
 		if (auto_game) { // initiate auto-game if auto mode has been chosen
-			autogame = new AutoGame(arena);
-			autogame.start();
+			auto=new AutoGame(arena);
 		}
 		try {
-			int dt = 35;
+			int dt = 50;
 			int i = 0;
 			while (g.isRunning()) {
-				if (i % 2 == 0) {
-					g.move(); // move robots
-					arena.update(); // update arena
+				if(auto_game) {
+					auto.MoveRobots(g);
 				}
-				window.repaint(); // repaint GUI
+				g.move(); // move robots
+				arena.update(); // update arena
+				if (i % 2 == 0) {
+					window.repaint(); // repaint GUI
+				}
 				Thread.sleep(dt);
 				i++;
 			}
-			if (autogame != null) {
-				autogame.interrupt(); // kill auto-game thread if still running
-			}
-		} catch (Exception e) {}
+		} catch (Exception e) {e.printStackTrace();}
 
 		kml = KML_Logger.getInstance(scenario); // close KML file
 		kml.end();
 		KMLDialog();
-
+		
+//		g.sendKML(kml.getKML());
+		
 		double grade = getGrade();
 		int moves = getMoves();
 
@@ -107,7 +111,6 @@ public class ClientThread extends Thread {
 			JSONObject game_obj = new JSONObject(arena.getGame().toString()).getJSONObject("GameServer");
 			grade = game_obj.getInt("grade");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return grade;

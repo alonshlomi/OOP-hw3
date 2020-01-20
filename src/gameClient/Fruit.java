@@ -18,6 +18,7 @@ public class Fruit {
 	private double _value;
 	private int _type;
 	private edge_data _edge;
+	private boolean isTaregeted;
 	
 	// Comparator by value:
 	public static final Fruit_Comparator _Comp = new Fruit_Comparator();
@@ -29,6 +30,7 @@ public class Fruit {
 	 * @param json String
 	 */
 	public Fruit(String jsonSTR) {
+		isTaregeted = false;
 		try {
 			JSONObject fruit = new JSONObject(jsonSTR).getJSONObject("Fruit");
 			double val = fruit.getDouble("value");
@@ -80,6 +82,15 @@ public class Fruit {
 	 */
 	public void setEdge(edge_data e) {
 		_edge = e;
+	}
+	
+	
+	public boolean isTargeted() {
+		return isTaregeted;
+	}
+	
+	public void setTargeted(boolean b) {
+		isTaregeted = b;
 	}
 	
 	// equals by position: 

@@ -21,6 +21,8 @@ public class KML_Logger {
     
     private final String FOLDER = "data/"; 	// folder name.
     private final String _KML = ".kml"; 	// file format.
+ 
+    
     
     private static KML_Logger kml_logger = null; // for Singelton use.
 
@@ -102,6 +104,37 @@ public class KML_Logger {
 
 	}
 	
+	public void addNodePlacemark(Point3D coordinate) {
+		
+		content.append( "<Placemark>\r\n" + 
+						"      <TimeStamp>\r\n" + 
+						"      </TimeStamp>\r\n" + 
+						"      <styleUrl>#node</styleUrl>\r\n" + 
+						"      <Point>\r\n" + 
+						"        <coordinates>"+coordinate.toString()+"</coordinates>\r\n" + 
+						"      </Point>\r\n" + 
+						"    </Placemark>"
+				);
+
+	}
+	
+	public void addEdgePlacemark(Point3D src, Point3D dest) {
+		
+		content.append( "<Placemark>\r\n" +
+						"	<LineString>\r\n" +
+						"		<extrude>5</extrude>\r\n" +
+						"		<altitudeMode>clampToGround</altitudeMode>\r\n" +
+						"		<coordinates>\r\n" +
+								src.toString()+"\r\n" +
+								dest.toString()+"\r\n" +
+								"</coordinates>" +
+						"	</LineString>\r\n" +
+						"</Placemark>"
+				);
+		
+	}
+	
+	
 	/**
 	 * Closing the file.
 	 */
@@ -110,7 +143,7 @@ public class KML_Logger {
     			"  </Document>\r\n" + 
     			"</kml>"
     			);
-    }
+    	}
     
     /**
      * Writing to a file.
@@ -126,6 +159,12 @@ public class KML_Logger {
 			e.printStackTrace();
 		}
     }
+    
+    public String getKML() {
+    	String ans = content.toString();
+    	return ans;
+    }
+    
     
     /**
      * Static function that creates a only one object of KML_Logger type. (Singelton Design Pattern)

@@ -45,7 +45,7 @@ public class GameArena {
 		kml = KML_Logger.getInstance(scenario); // initiate KML
 		game = Game_Server.getServer(scenario); // initiate the game
 		game_graph = new DGraph(game.getGraph());
-		addNodesToKML();
+		addGraphToKML();
 		setScaleParameters();
 		fruits = new ArrayList<Fruit>();
 		robots = new Hashtable<Integer, Robot>();
@@ -75,7 +75,19 @@ public class GameArena {
 					fruits.add(fruit);
 				}
 				fruits.sort(Fruit._Comp);
+				return;
 			}
+			
+//			for (String fruit_str : game.getFruits()) {
+//				Fruit fruit = new Fruit(fruit_str);
+//				
+//				if(fruits.contains(fruit)) {
+//					continue;
+//				}
+//				fruits.remove(0);
+//				fruits.add(fruit);
+//				setEdgeToFruits(fruit);
+//			}
 		}
 	}
 	
@@ -150,9 +162,14 @@ public class GameArena {
 	}
 
 	// Adding placemarks on nodes positions.
-	private void addNodesToKML() {
+	public void addGraphToKML() {
 		for (node_data node : game_graph.getV()) {
-			kml.addPlacemark(node.getLocation(), "node");
+			kml.addNodePlacemark(node.getLocation());
+			for (edge_data edge : game_graph.getE(node.getKey())) {
+				node_data src = game_graph.getNode(edge.getSrc());
+				node_data dest = game_graph.getNode(edge.getDest());
+				kml.addEdgePlacemark(src.getLocation(), dest.getLocation());
+			}
 		}
 	}
 

@@ -1,17 +1,29 @@
 package gameClient;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import dataStructure.*;
 
@@ -36,7 +48,9 @@ public class MyGameGUI extends JFrame implements MouseListener {
 
 	private GameArena arena; // arena object
 	private boolean auto_game; // variable indicates whether is auto game or not
-
+	private int user_id;
+	
+	
 	/**
 	 * Constructor initiate the GUI.
 	 * 
@@ -55,21 +69,121 @@ public class MyGameGUI extends JFrame implements MouseListener {
 
 	// Initiate GUI:
 	private void initGUI() {
-		this.setTitle("The Maze of Waze - scenario "+arena.getScenario());
+		this.setTitle("The Maze of Waze - Scenario "+arena.getScenario());
 		this.setBounds(200, 0, WIDTH, HEIGHT);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		MenuBar menubar = new MenuBar();
+		Menu stats_menu = new Menu("Stats"); 
+		MenuItem my_stats = new MenuItem("My Stats");
+		MenuItem class_stats = new MenuItem("Class Stats");
+		
+		my_stats.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				myStats();
+			}
+		});
+		
+		class_stats.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				classStats();
+			}
+		});
+		
+		
+		stats_menu.add(my_stats);
+		stats_menu.add(class_stats);
+		menubar.add(stats_menu);
+		
+		this.setMenuBar(menubar);
 		this.setVisible(true);
+		
 		if (!auto_game) { // use mouse-listener if manual mode has been chosen
 			this.addMouseListener(this);
 		}
 	}
 
+	private void classStats() {
+		try {
+			int scenario = arena.getScenario();
+			JFrame frame = new JFrame("Class Stats - Scenario "+scenario);
+			
+			frame.setLayout(new FlowLayout());
+			frame.setBounds(200, 0, 600, 600);
+
+			int[] my_pos = ServerDB.myPosition(user_id, scenario);
+			
+			String[] col = {"Pos.","UserID","Score","Moves","Data"};
+			String[][] data = ServerDB.bestScores(scenario);
+			
+
+			JLabel pos_lbl = new JLabel("Your position is "+my_pos[0]+" of "+my_pos[1]+" players.");
+			if(my_pos[0] == -1) {
+				pos_lbl.setText("You are not ranked!");
+			}
+			
+			DefaultTableModel model = new DefaultTableModel(data, col);
+			JTable data_tbl = new JTable(model);
+			JScrollPane scroll = new JScrollPane(data_tbl);
+			
+			pos_lbl.setFont(new Font("Arial", Font.BOLD, 15));
+			frame.add(pos_lbl);
+			frame.add(scroll);
+			
+			frame.setVisible(true);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private void myStats() {
+		try {
+			int scenario = arena.getScenario();
+			JFrame frame = new JFrame("My Stats - " + user_id);
+			frame.setLayout(new GridLayout(3,1));
+			frame.setBounds(200, 0, 500, 300);
+			
+			int games_played = ServerDB.gamesPlayedCount(user_id);
+			int curr_level = ServerDB.getCurrentLevel(user_id);
+			double[] my_best_score = ServerDB.myBestScore(user_id, scenario);
+			
+			
+			JLabel games_played_lbl = new JLabel("Number of games you played: "+games_played+"\n");
+			JLabel curr_level_lbl = new JLabel("Your current level: "+curr_level+"\n");
+			JLabel my_best_lbl = new JLabel("Your best score for scenario "+scenario+" is "+my_best_score[0]+" in "+(int) my_best_score[1]+" moves.");
+			
+			if(my_best_score[0] == -1) {
+				my_best_lbl.setText("You dont have a record for scenario "+scenario+" yet");
+			}
+			
+			games_played_lbl.setFont(new Font("Arial", Font.BOLD, 15));
+			curr_level_lbl.setFont(new Font("Arial", Font.BOLD, 15));
+			my_best_lbl.setFont(new Font("Arial", Font.BOLD, 15));
+
+			frame.add(games_played_lbl);
+			frame.add(curr_level_lbl);
+			frame.add(my_best_lbl);
+			
+			frame.setVisible(true);
+			
+
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
 	// Draw time to end:
-	private void setTime(Graphics2D g) {
+
+	private void setTimeAndScore(Graphics2D g) {
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Arial", Font.BOLD, 15));
 		g.drawString("Time: " + arena.getGame().timeToEnd() / 1000, 50, 70);
+		g.setColor(Color.BLUE);
+		g.setFont(new Font("Arial", Font.BOLD, 12));
+		g.drawString("Score: "+arena.getGrade(), 50, 90);
+		g.drawString("Moves: "+arena.getMoves(), 50, 110);
 	}
 
 	/**
@@ -87,10 +201,11 @@ public class MyGameGUI extends JFrame implements MouseListener {
                 RenderingHints.VALUE_STROKE_PURE);
 		g2d.setBackground(new Color(240, 240, 240));
 		g2d.clearRect(0, 0, WIDTH, HEIGHT);
-
+		
+		
 		paintGraph(g2d);
 
-		setTime(g2d);
+		setTimeAndScore(g2d);
 		paintFruits(g2d);
 		paintRobots(g2d);
 
@@ -100,6 +215,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 	}
 
 	// Paint graph nodes and edges:
+
 	private void paintGraph(Graphics2D g) {
 		
 		WIDTH = getWidth();
@@ -145,6 +261,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 			g.drawString(node.getKey() + "", node_x + 5, node_y + 5);
 		}
 	}
+	
 
 	// Paint fruits:
 	private void paintFruits(Graphics2D g) {
@@ -169,9 +286,10 @@ public class MyGameGUI extends JFrame implements MouseListener {
 			}
 		}
 	}
+	
 
 	// Paint robots:
-	private void paintRobots(Graphics2D g) {
+	private void paintRobots(Graphics2D g) { // NEED TO REMOVE FOR!!
 		WIDTH = getWidth();
 		HEIGHT = getHeight();
 		double minX = arena_minX;
@@ -179,7 +297,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		double maxX = arena_maxX;
 		double maxY = arena_maxY;
 
-		List<String> rob = arena.getGame().getRobots();
+		List<String> rob = arena.getGame().getRobots(); // NEED TO REMOVE!!!
 		for (int i = 0; i < rob.size(); i++) {
 			g.setFont(new Font("Arial", Font.BOLD, 12));
 			g.drawString(rob.get(i), WIDTH / 5, 70 + (20 * i));
@@ -200,6 +318,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 			g.drawString(robot.getID() + "", robot_x - 5, robot_y + 5);
 		}
 	}
+	
 
 	// Scaling methods: (Yael's code)
 	private double scale(double data, double r_min, double r_max, double t_min, double t_max) {
@@ -207,11 +326,13 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		double res = ((data - r_min) / (r_max - r_min)) * (t_max - t_min) + t_min;
 		return res;
 	}
+	
 
 	private double scaleBack(double scaled_data, double r_min, double r_max, double t_min, double t_max) {
 		double res = ((scaled_data - t_min) / (t_max - t_min)) * (r_max - r_min) + r_min;
 		return res;
 	}
+	
 	//
 
 	@Override
@@ -247,6 +368,11 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		}
 	}
 
+	public void setUserID(int id) {
+		user_id = id;
+	}
+	
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub

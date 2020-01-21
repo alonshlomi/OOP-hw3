@@ -1,10 +1,6 @@
 package gameClient;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import Server.Game_Server;
 import Server.game_service;
@@ -29,13 +25,18 @@ public class ClientThread extends Thread {
 	 * default game mode
 	 */
 	private static boolean auto_game = true;
-
+	/**
+	 * default user id
+	 */
+	private static int user_id = 999;
+	
 	/**
 	 * Constructor initiate the GUI and arena.
 	 */
 	public ClientThread() {
 		arena = new GameArena(scenario);
 		window = new MyGameGUI(arena, auto_game);
+		window.setUserID(user_id);
 	}
 
 	/**
@@ -43,8 +44,8 @@ public class ClientThread extends Thread {
 	 */
 	@Override
 	public void run() {
-		int id = 205487747;
-		Game_Server.login(id); 
+
+		Game_Server.login(user_id); 
 		game_service g = arena.getGame();
 		g.startGame(); // start game
 		
@@ -71,49 +72,23 @@ public class ClientThread extends Thread {
 
 		kml = KML_Logger.getInstance(scenario); // close KML file
 		kml.end();
-		KMLDialog();
-		
-		g.sendKML(kml.getKML());
-		
-		double grade = getGrade();
-		int moves = getMoves();
+		KMLDialog(g);
+				
+		double grade = arena.getGrade();
+		int moves = arena.getMoves();
 
 		// message with grade and moves
 		JOptionPane.showMessageDialog(window, "Game Over!\nPoints earned: " + grade + " in " + moves + " moves.");
-		window.setVisible(false);
-		System.exit(0); // successfully exited
+		
 	}
 
 	// KML dialog for the user to choose.
-	private void KMLDialog() {
+	private void KMLDialog(game_service g) {
 		int ans = JOptionPane.showConfirmDialog(window, "Export to KML?");
 		if (ans == 0) {
 			kml.export();
+			g.sendKML(kml.getKML());
 		}
-	}
-
-	// Returns the moves played in current game:
-	private int getMoves() {
-		int moves = -1;
-		try {
-			JSONObject game_obj = new JSONObject(arena.getGame().toString()).getJSONObject("GameServer");
-			moves = game_obj.getInt("moves");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return moves;
-	}
-
-	// Returns the points earned in current game:
-	private double getGrade() {
-		int grade = -1;
-		try {
-			JSONObject game_obj = new JSONObject(arena.getGame().toString()).getJSONObject("GameServer");
-			grade = game_obj.getInt("grade");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return grade;
 	}
 
 	// Opening window for choosing scenario and mode:
@@ -123,10 +98,13 @@ public class ClientThread extends Thread {
 		try {
 
 			String[] modes = { "Manual", "Auto" };
+			String id = JOptionPane.showInputDialog(frame, "Please insert your ID");
 			String stage = JOptionPane.showInputDialog(frame, "Please insert a scenerio [0-23]");
 			int mode = JOptionPane.showOptionDialog(frame, "Choose option", "The Maze of Waze",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, modes, modes[1]);
-
+			
+			user_id = Integer.parseInt(id);
+			
 			scenario = Integer.parseInt(stage);
 
 			if (scenario > 23 || scenario < 0)

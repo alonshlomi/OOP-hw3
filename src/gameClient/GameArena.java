@@ -295,4 +295,29 @@ public class GameArena {
 	public graph getGraph() {
 		return game_graph;
 	}
+
+	// Returns the moves played in current game:
+	public int getMoves() {
+		int moves = -1;
+		try {
+			JSONObject game_obj = new JSONObject(game.toString()).getJSONObject("GameServer");
+			moves = game_obj.getInt("moves");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return moves;
+	}
+	
+	// Returns the points earned in current game:
+	public double getGrade() {
+		int grade = -1;
+		try {
+			JSONObject game_obj = new JSONObject(game.toString()).getJSONObject("GameServer");
+			grade = game_obj.getInt("grade");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return grade;
+	}
+
 }

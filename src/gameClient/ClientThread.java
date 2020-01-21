@@ -43,8 +43,8 @@ public class ClientThread extends Thread {
 	 */
 	@Override
 	public void run() {
-		int id = 999;
-	//	Game_Server.login(id); 
+		int id = 205487747;
+		Game_Server.login(id); 
 		game_service g = arena.getGame();
 		g.startGame(); // start game
 		
@@ -53,7 +53,7 @@ public class ClientThread extends Thread {
 			auto=new AutoGame(arena);
 		}
 		try {
-			int dt = 50;
+			int dt = 70;
 			int i = 0;
 			while (g.isRunning()) {
 				if(auto_game) {
@@ -73,7 +73,7 @@ public class ClientThread extends Thread {
 		kml.end();
 		KMLDialog();
 		
-//		g.sendKML(kml.getKML());
+		g.sendKML(kml.getKML());
 		
 		double grade = getGrade();
 		int moves = getMoves();

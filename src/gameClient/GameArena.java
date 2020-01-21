@@ -12,8 +12,9 @@ import dataStructure.*;
 import utils.Point3D;
 
 /**
- * This class represents the Game arena which going to be draw in our game. 
- * The arena holds the server, graph, fruits and robots.
+ * This class represents the Game arena which going to be draw in our game. The
+ * arena holds the server, graph, fruits and robots.
+ * 
  * @author Alon Perlmuter.
  * @author Shlomi Daari.
  *
@@ -21,7 +22,7 @@ import utils.Point3D;
 public class GameArena {
 
 	private game_service game; // server object.
-	
+
 	private graph game_graph;
 	private ArrayList<Fruit> fruits;
 	private Hashtable<Integer, Robot> robots;
@@ -31,13 +32,15 @@ public class GameArena {
 	private int num_of_robots; // num of robots.
 	private int scenario;
 	private static final double EPS = 0.0003; // epsilon
-	
+
 	// Empty constructor:
-	public GameArena() {}
-	
+	public GameArena() {
+	}
+
 	/**
-	 * Constructor that initiate the arena with data given by the server.
-	 * Initiate KML file, graph parameters and places the robots.
+	 * Constructor that initiate the arena with data given by the server. Initiate
+	 * KML file, graph parameters and places the robots.
+	 * 
 	 * @param scenario number.
 	 */
 	public GameArena(int scenario) {
@@ -53,11 +56,11 @@ public class GameArena {
 		setRobotsPositions();
 		initRobots();
 	}
-	
-/*
- * Auxiliary methods: 
- */
-	
+
+	/*
+	 * Auxiliary methods:
+	 */
+
 	// Initiate fruits from json string to Fruit object:
 	private void initFruits() {
 		synchronized (fruits) { // to avoid sync exceptions
@@ -69,15 +72,16 @@ public class GameArena {
 					String f_type = "apple";
 					if (fruit.getType() == -1) {
 						f_type = "banana";
-						kml.addPlacemark(fruit.getLocation(), f_type); // add placemark to kml
 					}
+					kml.addPlacemark(fruit.getLocation(), f_type); // add placemark to kml
+
 					setEdgeToFruits(fruit);
 					fruits.add(fruit);
 				}
 				fruits.sort(Fruit._Comp);
 				return;
 			}
-			
+
 //			for (String fruit_str : game.getFruits()) {
 //				Fruit fruit = new Fruit(fruit_str);
 //				
@@ -90,7 +94,7 @@ public class GameArena {
 //			}
 		}
 	}
-	
+
 	// Initiate robots from json string to Robot object:
 	private void initRobots() {
 		for (String robot_str : game.getRobots()) {
@@ -112,8 +116,8 @@ public class GameArena {
 				int t = 1;
 				if (node.getKey() > dst.getKey()) {
 					t = -1;
-				} 
-				
+				}
+
 				if ((Math.abs(tmp) <= Point3D.EPS2) && (fruit.getType() == t)) {
 					fruit.setEdge(edge);
 					return;
@@ -136,7 +140,8 @@ public class GameArena {
 		return robots_num;
 	}
 
-	// Initiate starting position, near the highest value fruits: (strategic decision)
+	// Initiate starting position, near the highest value fruits: (strategic
+	// decision)
 	private void setRobotsPositions() {
 		int robots_num = robotsNum();
 
@@ -152,7 +157,7 @@ public class GameArena {
 		minX = Double.MAX_VALUE;
 		maxY = Double.MIN_VALUE;
 		minY = Double.MAX_VALUE;
-	
+
 		for (node_data node : game_graph.getV()) {
 			maxX = Math.max(maxX, node.getLocation().x());
 			maxY = Math.max(maxY, node.getLocation().y());
@@ -173,10 +178,10 @@ public class GameArena {
 		}
 	}
 
-/*
- * Public methods:
- */
-	
+	/*
+	 * Public methods:
+	 */
+
 	/**
 	 * Re-initiate the fruits and robots from the server and updates the lists.
 	 */
@@ -184,7 +189,7 @@ public class GameArena {
 		initFruits();
 		initRobots();
 	}
-	
+
 	/**
 	 * 
 	 * @return game object.
@@ -256,9 +261,10 @@ public class GameArena {
 	public int getScenario() {
 		return scenario;
 	}
-	
+
 	/**
 	 * Returns id of a robot which is approximately places in (x,y) coordinates.
+	 * 
 	 * @param x coordinate.
 	 * @param y coordinate.
 	 * @return robot id.

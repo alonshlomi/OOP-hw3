@@ -8,6 +8,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedHashMap;
 
+/**
+ * This class implements the connection between the game and data-base and
+ * allows to get info from it.
+ * 
+ * @author Alon Perlmuter.
+ * @author Shlomi Daari.
+ *
+ */
 public class ServerDB {
 	// Connection parameters:
 	public static final String jdbcUrl = "jdbc:mysql://db-mysql-ams3-67328-do-user-4468260-0.db.ondigitalocean.com:25060/oop?useUnicode=yes&characterEncoding=UTF-8&useSSL=false";

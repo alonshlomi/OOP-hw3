@@ -54,7 +54,7 @@ public class AutoGame {
 				}
 				max_speed = Math.max(max_speed, robot.getSpeed());
 				Fruit fruit = fruits_status.get(robot.getID());
-				if (robot.getSpeed() > 2) {
+				if (robot.getSpeed() >= 2) {
 					if (robot.getSrc() == fruit.getEdge().getSrc() && dest == fruit.getEdge().getDest()) {
 
 						// Calculate the dt for eating the fruit for sure:
@@ -77,6 +77,8 @@ public class AutoGame {
 		}
 	}
 
+	// Move to the next node in rid path if there is one,
+	// Otherwise, choose the next path:
 	private int nextNodeByValue(int rid) {
 		Robot robot = arena.getRobots().get(rid);
 		List<node_data> tmp = robots_paths.get(rid);

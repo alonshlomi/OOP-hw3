@@ -62,12 +62,12 @@ public class ClientThread extends Thread {
 			int i = 0;
 			while (g.isRunning()) {
 				if (auto_game) {
-					dt = 10;
+					dt = 35;
 					auto.moveRobots(g);
 				}
 				window.repaint(); // repaint GUI
 				arena.update(); // update arena
-				if (i % 10 == 0) {
+				if (i % 2 == 0) {
 					g.move(); // move robots
 				}
 				Thread.sleep(dt);

@@ -6,12 +6,15 @@ The goal of the game is to earn as many points as possible in given time. (30-60
 The game has 24 levels, starting in 0 and the level of difficulty increases, each level can be exported to KML file.  
 The game can be play in 2 modes: _Manual_(by user) , _Auto_(by computer)  
 
+_Addition for Ex4_:  
+You can watch your own stats and other players' stats using MySQL database.
+
 The project is made out 3 packages taken from previous assignment - [Ex2](https://github.com/alonshlomi/OOP-hw2)   
 * **algorithms** 
 * **dataStructure**
 * **utils**
 
-The package we programmed in this game is **gameClient** contains 7 classes:
+The package we programmed in this game is **gameClient** contains 8 classes:
 * _Fruit_
 * _Robot_
 * _GameArena_
@@ -19,6 +22,7 @@ The package we programmed in this game is **gameClient** contains 7 classes:
 * _ClientThread_
 * _MyGameGUI_
 * _KML_Logger_
+* _ServerDB_
 
 (More details about the classes can be found on Wiki)
 

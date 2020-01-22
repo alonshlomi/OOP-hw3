@@ -1,4 +1,5 @@
 package gameClient;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -15,7 +16,7 @@ public class ClientThread extends Thread {
 
 	private MyGameGUI window; // GUI object.
 	private GameArena arena; // arena object.
-	private KML_Logger kml;	// KML object.
+	private KML_Logger kml; // KML object.
 
 	/**
 	 * default scenario
@@ -33,10 +34,9 @@ public class ClientThread extends Thread {
 	 * default dt
 	 */
 	public static int dt = 100;
-	
+
 	/**
-	 * Constructor initiate the GUI and arena.
-	 * Sets userID to GUI.
+	 * Constructor initiate the GUI and arena. Sets userID to GUI.
 	 */
 	public ClientThread() {
 		arena = new GameArena(scenario);
@@ -50,41 +50,43 @@ public class ClientThread extends Thread {
 	@Override
 	public void run() {
 
-		Game_Server.login(user_id); 
+		Game_Server.login(user_id);
 		game_service g = arena.getGame();
 		g.startGame(); // start game
-		
+
 		AutoGame auto = null;
 		if (auto_game) { // initiate auto-game if auto mode has been chosen
-			auto=new AutoGame(arena);
+			auto = new AutoGame(arena);
 		}
 		try {
 			int i = 0;
 			while (g.isRunning()) {
-				if(auto_game) {
+				if (auto_game) {
 					dt = 10;
 					auto.moveRobots(g);
 				}
+				window.repaint(); // repaint GUI
 				arena.update(); // update arena
 				if (i % 10 == 0) {
 					g.move(); // move robots
-					window.repaint(); // repaint GUI
 				}
 				Thread.sleep(dt);
 				i++;
 			}
-		} catch (Exception e) {e.printStackTrace();}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		kml = KML_Logger.getInstance(scenario); // close KML file
 		kml.end();
 		KMLDialog(g);
-				
+
 		double grade = arena.getGrade();
 		int moves = arena.getMoves();
 
 		// message with grade and moves
 		JOptionPane.showMessageDialog(window, "Game Over!\nPoints earned: " + grade + " in " + moves + " moves.");
-		
+
 	}
 
 	// KML dialog for the user to choose.
@@ -92,7 +94,7 @@ public class ClientThread extends Thread {
 		int ans = JOptionPane.showConfirmDialog(window, "Export to KML?");
 		if (ans == 0) {
 			kml.export();
-	//		g.sendKML(kml.getKML());
+			g.sendKML(kml.getKML());
 		}
 	}
 
@@ -104,13 +106,13 @@ public class ClientThread extends Thread {
 
 			String id = JOptionPane.showInputDialog(frame, "Please insert your ID");
 			String stage = JOptionPane.showInputDialog(frame, "Please insert a scenerio [0-23]");
-			
+
 			String[] modes = { "Manual", "Auto" };
 			int mode = JOptionPane.showOptionDialog(frame, "Choose option", "The Maze of Waze",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, modes, modes[1]);
-			
+
 			user_id = Integer.parseInt(id);
-			
+
 			scenario = Integer.parseInt(stage);
 
 			if (scenario > 23 || scenario < 0)

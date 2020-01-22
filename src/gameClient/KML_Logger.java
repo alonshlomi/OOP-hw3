@@ -43,7 +43,7 @@ public class KML_Logger {
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
                         "<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n" +
                         "  <Document>\r\n" +
-                        "    <name>Scenario number " + this.scenario + "</name>" +
+                        "    <name>stage: " + this.scenario + " maze of waze</name>" +
                         " <Style id=\"node\">\r\n" +
                         "      <IconStyle>\r\n" +
                         "        <Icon>\r\n" +
@@ -52,7 +52,7 @@ public class KML_Logger {
                         "        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n" +
                         "      </IconStyle>\r\n" +
                         "    </Style>" +
-                        " <Style id=\"banana\">\r\n" +
+                        " <Style id=\"fruit-banana\">\r\n" +
                         "      <IconStyle>\r\n" +
                         "        <Icon>\r\n" +
                         "          <href>http://maps.google.com/mapfiles/kml/pal5/icon57.png</href>\r\n" +
@@ -60,7 +60,7 @@ public class KML_Logger {
                         "        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n" +
                         "      </IconStyle>\r\n" +
                         "    </Style>" +
-                        " <Style id=\"apple\">\r\n" +
+                        " <Style id=\"fruit-apple\">\r\n" +
                         "      <IconStyle>\r\n" +
                         "        <Icon>\r\n" +
                         "          <href>http://maps.google.com/mapfiles/kml/pal5/icon56.png</href>\r\n" +

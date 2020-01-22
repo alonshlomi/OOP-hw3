@@ -65,33 +65,19 @@ public class GameArena {
 	private void initFruits() {
 		synchronized (fruits) { // to avoid sync exceptions
 			fruits.clear();
-	//		if (fruits.isEmpty()) {
-				for (String fruit_str : game.getFruits()) {
-					Fruit fruit = new Fruit(fruit_str);
+			for (String fruit_str : game.getFruits()) {
+				Fruit fruit = new Fruit(fruit_str);
 
-					String f_type = "apple";
-					if (fruit.getType() == -1) {
-						f_type = "banana";
-					}
-					kml.addPlacemark(fruit.getLocation(), f_type); // add placemark to kml
-
-					setEdgeToFruits(fruit);
-					fruits.add(fruit);
+				String f_type = "fruit-apple";
+				if (fruit.getType() == -1) {
+					f_type = "fruit-banana";
 				}
-				fruits.sort(Fruit._Comp);
-				return;
-	//		}
+				kml.addPlacemark(fruit.getLocation(), f_type); // add placemark to kml
 
-//			for (String fruit_str : game.getFruits()) {
-//				Fruit fruit = new Fruit(fruit_str);
-//				
-//				if(fruits.contains(fruit)) {
-//					continue;
-//				}
-//				fruits.remove(0);
-//				fruits.add(fruit);
-//				setEdgeToFruits(fruit);
-//			}
+				setEdgeToFruits(fruit);
+				fruits.add(fruit);
+			}
+			fruits.sort(Fruit._Comp);
 		}
 	}
 
@@ -307,7 +293,7 @@ public class GameArena {
 		}
 		return moves;
 	}
-	
+
 	// Returns the points earned in current game:
 	public double getGrade() {
 		int grade = -1;

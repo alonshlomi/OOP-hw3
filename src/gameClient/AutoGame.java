@@ -21,6 +21,7 @@ public class AutoGame {
 	private Graph_Algo algo_g; // for shortest path alogrithms
 	private Hashtable<Integer, List<node_data>> robots_paths; // holds the robots paths
 	private Hashtable<Integer, Fruit> fruits_status; // indicates whether the fruits are targeted or not
+	private double max_speed;
 
 	/**
 	 * Constructor that initiate the arena to the 'auto player'.
@@ -32,6 +33,7 @@ public class AutoGame {
 		robots_paths = new Hashtable<>();
 		fruits_status = new Hashtable<Integer, Fruit>();
 		algo_g = new Graph_Algo(arena.getGraph());
+		max_speed = 1;
 		initRobotPath();
 	}
 
@@ -45,11 +47,16 @@ public class AutoGame {
 		for (int i = 0; i < arena.numOfRobots(); i++) {
 			Robot robot = arena.getRobots().get(i);
 			if (robot.getDest() == -1) {
-				dest = nextNode(i);
+				if (robot.getSpeed() > max_speed) {
+					dest = nextNodeByDist(i);
+				} else {
+					dest = nextNodeByValue(i);
+				}
+				max_speed = Math.max(max_speed, robot.getSpeed());
 				Fruit fruit = fruits_status.get(robot.getID());
-				if (robot.getSpeed() >= 2) {
+				if (robot.getSpeed() > 2) {
 					if (robot.getSrc() == fruit.getEdge().getSrc() && dest == fruit.getEdge().getDest()) {
-						
+
 						// Calculate the dt for eating the fruit for sure:
 						node_data src = arena.getGraph().getNode(fruit.getEdge().getSrc());
 						node_data dst = arena.getGraph().getNode(fruit.getEdge().getDest());
@@ -70,12 +77,35 @@ public class AutoGame {
 		}
 	}
 
-	// Move to the next node in rid path if there is one,
-	// Otherwise, choose the next path:
-	private int nextNode(int rid) {
+	private int nextNodeByValue(int rid) {
 		Robot robot = arena.getRobots().get(rid);
 		List<node_data> tmp = robots_paths.get(rid);
-		
+
+		if (tmp.isEmpty()) {
+			fruits_status.remove(rid);
+			synchronized (arena.getFruits()) {
+				if (arena.getFruits().size() > 0) {
+					Fruit fruit = findExpensiveFruit(robot);
+					tmp = algo_g.shortestPath(robot.getSrc(), fruit.getEdge().getSrc());
+					node_data dest = arena.getGraph().getNode(fruit.getEdge().getDest());
+					tmp.add(dest);
+					robots_paths.put(robot.getID(), tmp);
+					fruits_status.put(rid, fruit);
+				}
+			}
+		}
+
+		node_data n = tmp.get(0);
+		tmp.remove(0);
+		return n.getKey();
+	}
+
+	// Move to the next node in rid path if there is one,
+	// Otherwise, choose the next path:
+	private int nextNodeByDist(int rid) {
+		Robot robot = arena.getRobots().get(rid);
+		List<node_data> tmp = robots_paths.get(rid);
+
 		if (tmp.isEmpty()) {
 			fruits_status.remove(rid);
 			synchronized (arena.getFruits()) {
@@ -101,7 +131,11 @@ public class AutoGame {
 		Fruit ans = null;
 		for (int i = 0; i < arena.getFruits().size(); i++) {
 			Fruit fruit = arena.getFruits().get(i);
-			if (fruits_status.containsValue(fruit))
+			if (fruit.getEdge().getSrc() == robot.getSrc()) {
+				return fruit;
+			}
+
+			if (fruits_status.values().contains(fruit))
 				continue;
 
 			double dist = algo_g.shortestPathDist(robot.getSrc(), fruit.getEdge().getSrc());
@@ -111,6 +145,20 @@ public class AutoGame {
 			}
 		}
 		return ans;
+	}
+
+	// Finds the most valued fruit avaliable for given robot:
+	private Fruit findExpensiveFruit(Robot robot) {
+		for (int i = 0; i < arena.getFruits().size(); i++) {
+			Fruit fruit = arena.getFruits().get(i);
+			if (fruit.getEdge().getSrc() == robot.getSrc()) {
+				return fruit;
+			}
+			if (fruits_status.values().contains(fruit))
+				continue;
+			return fruit;
+		}
+		return null;
 	}
 
 	// Initiate the first path of the robots:

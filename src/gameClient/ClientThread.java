@@ -29,6 +29,10 @@ public class ClientThread extends Thread {
 	 * default user id
 	 */
 	private static int user_id = 999;
+	/**
+	 * default dt
+	 */
+	public static int dt = 100;
 	
 	/**
 	 * Constructor initiate the GUI and arena.
@@ -46,7 +50,7 @@ public class ClientThread extends Thread {
 	@Override
 	public void run() {
 
-	//	Game_Server.login(user_id); 
+		Game_Server.login(user_id); 
 		game_service g = arena.getGame();
 		g.startGame(); // start game
 		
@@ -55,17 +59,16 @@ public class ClientThread extends Thread {
 			auto=new AutoGame(arena);
 		}
 		try {
-			int dt = 90;
 			int i = 0;
 			while (g.isRunning()) {
 				if(auto_game) {
+					dt = 10;
 					auto.moveRobots(g);
 				}
-				g.move(); // move robots
 				arena.update(); // update arena
-				window.repaint(); // repaint GUI
-				if (i % 2 == 0) {
-					
+				if (i % 10 == 0) {
+					g.move(); // move robots
+					window.repaint(); // repaint GUI
 				}
 				Thread.sleep(dt);
 				i++;
@@ -89,7 +92,7 @@ public class ClientThread extends Thread {
 		int ans = JOptionPane.showConfirmDialog(window, "Export to KML?");
 		if (ans == 0) {
 			kml.export();
-			g.sendKML(kml.getKML());
+	//		g.sendKML(kml.getKML());
 		}
 	}
 

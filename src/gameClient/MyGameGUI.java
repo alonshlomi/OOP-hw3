@@ -104,7 +104,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		this.setVisible(true);
 	}
 
-	// Class-stats dialog: 
+	// Class-stats dialog:
 	private void classStats() {
 		try {
 			int scenario = arena.getScenario();
@@ -174,7 +174,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 	}
 
 	// Draw time-to-end, score and moves:
-	private void setTimeAndScore(Graphics2D g) {
+	private void paintInfo(Graphics2D g) {
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Arial", Font.BOLD, 15));
 		g.drawString("Time: " + arena.getGame().timeToEnd() / 1000, 50, 70);
@@ -182,6 +182,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		g.setFont(new Font("Arial", Font.BOLD, 12));
 		g.drawString("Score: " + arena.getGrade(), 50, 90);
 		g.drawString("Moves: " + arena.getMoves(), 50, 110);
+		g.drawString("dt: " + ClientThread.dt, 50, 130);
 	}
 
 	/**
@@ -198,8 +199,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 		g2d.clearRect(0, 0, WIDTH, HEIGHT);
 
 		paintGraph(g2d);
-
-		setTimeAndScore(g2d);
+		paintInfo(g2d);
 		paintFruits(g2d);
 		paintRobots(g2d);
 
@@ -358,6 +358,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 
 	/**
 	 * Set the user id.
+	 * 
 	 * @param id of the user
 	 */
 	public void setUserID(int id) {

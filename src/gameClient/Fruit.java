@@ -89,4 +89,10 @@ public class Fruit {
 		Fruit other = (Fruit) obj;
 		return this._pos.equals(other.getLocation());
 	}
+	
+	@Override
+	public String toString() {
+		return _edge.toString();
+	}
+	
 }

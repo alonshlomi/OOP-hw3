@@ -97,7 +97,7 @@ public class KML_Logger {
 				"      <Point>\r\n" + 
 				"        <coordinates>"+coordinate.toString()+"</coordinates>\r\n" + 
 				"      </Point>\r\n" + 
-				"    </Placemark>"
+				"    </Placemark>\r\n"
 				);
 
 	}
@@ -115,8 +115,8 @@ public class KML_Logger {
 						"      <Point>\r\n" + 
 						"        <coordinates>"+coordinate.toString()+"</coordinates>\r\n" + 
 						"      </Point>\r\n" + 
-						"    </Placemark>"
-				);
+						"    </Placemark>\r\n"
+						);
 
 	}
 	
@@ -136,7 +136,7 @@ public class KML_Logger {
 								dest.toString()+"\r\n" +
 								"</coordinates>" +
 						"	</LineString>\r\n" +
-						"</Placemark>"
+						"</Placemark>\r\n"
 				);
 		
 	}

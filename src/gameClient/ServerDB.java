@@ -143,7 +143,6 @@ public class ServerDB {
 		return ans;
 	}
 
-	// ans[0] - my position, ans[1] - total players
 	/**
 	 * Returns user_id position in given level_id in relation to the class.
 	 * @param user_id

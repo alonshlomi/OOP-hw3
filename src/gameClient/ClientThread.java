@@ -15,7 +15,7 @@ public class ClientThread extends Thread {
 
 	private MyGameGUI window; // GUI object.
 	private GameArena arena; // arena object.
-	private KML_Logger kml;
+	private KML_Logger kml;	// KML object.
 
 	/**
 	 * default scenario
@@ -32,6 +32,7 @@ public class ClientThread extends Thread {
 	
 	/**
 	 * Constructor initiate the GUI and arena.
+	 * Sets userID to GUI.
 	 */
 	public ClientThread() {
 		arena = new GameArena(scenario);
@@ -45,7 +46,7 @@ public class ClientThread extends Thread {
 	@Override
 	public void run() {
 
-		Game_Server.login(user_id); 
+	//	Game_Server.login(user_id); 
 		game_service g = arena.getGame();
 		g.startGame(); // start game
 		
@@ -54,16 +55,17 @@ public class ClientThread extends Thread {
 			auto=new AutoGame(arena);
 		}
 		try {
-			int dt = 70;
+			int dt = 90;
 			int i = 0;
 			while (g.isRunning()) {
 				if(auto_game) {
-					auto.MoveRobots(g);
+					auto.moveRobots(g);
 				}
 				g.move(); // move robots
 				arena.update(); // update arena
+				window.repaint(); // repaint GUI
 				if (i % 2 == 0) {
-					window.repaint(); // repaint GUI
+					
 				}
 				Thread.sleep(dt);
 				i++;
@@ -97,9 +99,10 @@ public class ClientThread extends Thread {
 		frame.setBounds(200, 0, 500, 500);
 		try {
 
-			String[] modes = { "Manual", "Auto" };
 			String id = JOptionPane.showInputDialog(frame, "Please insert your ID");
 			String stage = JOptionPane.showInputDialog(frame, "Please insert a scenerio [0-23]");
+			
+			String[] modes = { "Manual", "Auto" };
 			int mode = JOptionPane.showOptionDialog(frame, "Choose option", "The Maze of Waze",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, modes, modes[1]);
 			

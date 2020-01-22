@@ -57,15 +57,15 @@ public class GameArena {
 		initRobots();
 	}
 
-	/*
-	 * Auxiliary methods:
-	 */
+/*
+ * Auxiliary methods:
+ */
 
 	// Initiate fruits from json string to Fruit object:
 	private void initFruits() {
 		synchronized (fruits) { // to avoid sync exceptions
 			fruits.clear();
-			if (fruits.isEmpty()) {
+	//		if (fruits.isEmpty()) {
 				for (String fruit_str : game.getFruits()) {
 					Fruit fruit = new Fruit(fruit_str);
 
@@ -80,7 +80,7 @@ public class GameArena {
 				}
 				fruits.sort(Fruit._Comp);
 				return;
-			}
+	//		}
 
 //			for (String fruit_str : game.getFruits()) {
 //				Fruit fruit = new Fruit(fruit_str);
@@ -178,9 +178,9 @@ public class GameArena {
 		}
 	}
 
-	/*
-	 * Public methods:
-	 */
+/* 
+ * Public methods:
+ */
 
 	/**
 	 * Re-initiate the fruits and robots from the server and updates the lists.

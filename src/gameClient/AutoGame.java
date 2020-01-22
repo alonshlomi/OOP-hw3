@@ -21,7 +21,7 @@ public class AutoGame {
         initRobotPath();
     }
 
-    public void MoveRobots(game_service game)
+    public void moveRobots(game_service game)
     {
         int dest = -1;
         for (int i = 0; i < arena.numOfRobots(); i++) {
@@ -67,14 +67,14 @@ public class AutoGame {
         Fruit ans = null;
         for(int i = 0; i < arena.getFruits().size() ; i ++) {
             Fruit fruit = arena.getFruits().get(i);
-            if(fruit.isTargeted()) continue;
+     //       if(fruit.isTargeted()) continue;
             double dist = algo_g.shortestPathDist(robot.getSrc(),fruit.getEdge().getSrc());
             if(dist < min_dist) {
                 min_dist = dist;
                 ans = fruit;
             }
         }
-        ans.setTargeted(true);
+       // ans.setTargeted(true);
         return ans;
     }
 

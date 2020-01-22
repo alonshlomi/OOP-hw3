@@ -115,7 +115,7 @@ public class MyGameGUI extends JFrame implements MouseListener {
 
 			int[] my_pos = ServerDB.myPosition(user_id, scenario);
 
-			String[] col = { "Pos.", "UserID", "Score", "Moves", "Data" };
+			String[] col = { "Pos.", "UserID", "Score", "Moves", "Date" };
 			String[][] data = ServerDB.bestScores(scenario);
 
 			JLabel pos_lbl = new JLabel("Your position is " + my_pos[0] + " of " + my_pos[1] + " players.");

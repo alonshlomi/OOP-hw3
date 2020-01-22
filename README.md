@@ -22,7 +22,7 @@ The package we programmed in this game is **gameClient** contains 8 classes:
 * _ClientThread_
 * _MyGameGUI_
 * _KML_Logger_
-* _ServerDB_
+* _ServerDB_ (added in Ex4)
 
 (More details about the classes can be found on Wiki)
 
@@ -45,4 +45,13 @@ The package we programmed in this game is **gameClient** contains 8 classes:
 * The score you earnd will be shown:  
 ![score](https://github.com/alonshlomi/OOP-hw3/blob/master/images/score.png)
 
+#### Watch stats: 
+* Click _Stats_ on menu:  
+![stats](https://github.com/alonshlomi/OOP-hw3/blob/master/images/stats.png)  
+
+* Click _My Stats_ to see your stats:  
+![mystats](https://github.com/alonshlomi/OOP-hw3/blob/master/images/mystats.png)  
+
+* Click _Class Stats to see the class stats:  
+![classstats](https://github.com/alonshlomi/OOP-hw3/blob/master/images/classstats.png)  
 

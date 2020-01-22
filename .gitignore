@@ -4,3 +4,4 @@ src/gameClient/SimpleGameClient.java
 /bin
 src/gameClient/SimpleDB.java
 src/gameClient/Ex4_Client.java
+lib/GameServer_v0.32.jar

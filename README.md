@@ -27,8 +27,11 @@ The package we programmed in this game is **gameClient** contains 8 classes:
 (More details about the classes can be found on Wiki)
 
 #### How to play The Maze of Waze:  
-* Launch the game and choose scenario: (0-23)  
-![launch](https://github.com/alonshlomi/OOP-hw3/blob/master/images/scenario.png)
+* Launch the game and enter your ID:  (_Added on Ex4_)
+![id](https://github.com/alonshlomi/OOP-hw3/blob/master/images/id.png)
+
+* Choose scenario: (0-23)  
+![scenario](https://github.com/alonshlomi/OOP-hw3/blob/master/images/scenario.png)
 
 * Choose playing mode: (_Auto_ or _Manual_)   
 ![mode](https://github.com/alonshlomi/OOP-hw3/blob/master/images/mode.png)
